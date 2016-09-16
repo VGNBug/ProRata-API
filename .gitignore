@@ -15,6 +15,3 @@ out
 *.ipr
 *.iws
 .DS_Store
-
-## Heroku ##
-src/main/resources/application.properties
