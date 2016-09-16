@@ -1,0 +1,23 @@
+machine: 
+  java: 
+    version: oraclejdk8
+
+test:
+ override:
+   - gradle clean build
+
+deployment:
+  production:
+    branch: master
+    heroku:
+      appname: prorata-api
+      
+  general:
+    artifacts:
+      -/home/ubuntu/**repo_name**/build/outputs/reports/**testFolderName**/connected
+
+  checkout:
+    post:
+      - git submodule sync
+      - git submodule update --init
+      - git submodule foreach --recursive git checkout master
