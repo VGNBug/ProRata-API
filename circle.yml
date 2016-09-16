@@ -1,0 +1,21 @@
+machine: 
+  java: 
+    version: oraclejdk8
+
+test:
+ override:
+   - gradle clean build
+
+deployment:
+  production:
+    branch: master
+    heroku:
+      appname: prorata-api
+  staging:
+    branch: integration
+    heroku:
+      appname: prorata-api-staging
+      
+  general:
+    artifacts:
+      -/home/ubuntu/**repo_name**/build/outputs/reports/**testFolderName**/connected
