@@ -29,12 +29,27 @@ repositories {
 	maven { url "https://repo.spring.io/milestone" }
 }
 
+sourceSets {
+	integrationTest {
+		java {
+			compileClasspath += main.output + test.output
+			runtimeClasspath += main.output + test.output
+			srcDir file('src/test-integration/java')
+		}
+		resources.srcDir file('src/test-integration/resources')
+	}
+}
+
+configurations {
+	integrationTestCompile.extendsFrom testCompile
+	integrationTestRuntime.extendsFrom testRuntime
+}
 
 dependencies {
 	// Local sub-projects
 	compile project('Generic-SpringBoot-API')
 	compile project('ProRata-Model')
-    testCompile project(path: ':Generic-SpringBoot-API', configuration: 'testOutput')
+	testCompile project(path: ':Generic-SpringBoot-API', configuration: 'testOutput')
 
 	// Remote
 	compile('org.springframework.boot:spring-boot-starter')
@@ -43,7 +58,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	runtime('org.postgresql:postgresql')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile('org.dbunit:dbunit:2.4.9')
+	testCompile('org.dbunit:dbunit:2.4.9')
 }
 
 eclipse {
@@ -67,3 +82,31 @@ task copyToLib(type: Copy) {
 }
 
 stage.dependsOn(copyToLib)
+
+task(runSimple, dependsOn: 'classes', type: JavaExec) {
+	main = 'com.pawsey.prorata.api.ProRataApiApplication'
+	classpath = sourceSets.main.runtimeClasspath
+//	args 'mrhaki'
+//	systemProperty 'simple.message', 'Hello '
+}
+
+defaultTasks 'runSimple'
+
+task integrationTest(type: Test) {
+	testClassesDir = sourceSets.integrationTest.output.classesDir
+	classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+
+tasks.withType(Test) {
+	reports.html.destination = file("${reporting.baseDir}/${name}")
+}
+
+task ci(dependsOn: [
+		build,
+		runSimple,
+		test
+])
