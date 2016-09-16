@@ -1,12 +1,15 @@
 package com.pawsey.prorata.api;
 
+import com.pawsey.api.GenericApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @SpringBootApplication
-public class ProRataApiApplication {
+@EntityScan("com.pawsey.prorata.model")
+public class ProRataApiApplication extends GenericApplication {
 
 	@RequestMapping("/")
 	@ResponseBody

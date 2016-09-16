@@ -1,4 +1,4 @@
 rootProject.name = 'ProRata-API'
 include 'Generic-SpringBoot-API'
+include 'Generic-SpringBoot-API:HtmlUtils'
 include 'ProRata-Model'
-
