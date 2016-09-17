@@ -9,7 +9,9 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +35,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     @Test
     private void testSignIn_SucceedsWithRightEmailRightPassword()
     {
-        ProrataUserEntity response = requestProrataUserEntity(expected.getEmail(), expected.getPassword());
+        ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), expected.getPassword());
 
         assertNotNull(response);
         assertEquals(response.getEmail(), expected.getEmail());
@@ -43,7 +45,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     @Test
     private void testSignIn_FailsWithWrongEmailRightPassword()
     {
-        ProrataUserEntity response = requestProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
+        ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
 
         assertNull(response);
     }
@@ -51,7 +53,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     @Test
     private void testSignIn_FailsWithRightEmailWrongPassword()
     {
-        ProrataUserEntity response = requestProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
+        ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
 
         assertNull(response);
     }
@@ -59,14 +61,28 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     @Test
     private void testSignIn_FailsWithWrongEmailWrongPassword()
     {
-        ProrataUserEntity response = requestProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
+        ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
     }
 
-    private ProrataUserEntity requestProrataUserEntity(String email, String password)
+    // TODO extract this as generic into the superclass
+    private ProrataUserEntity requestCreateProrataUserEntity()
     {
-        final String signInUrl = this.API_URL + "/" + email + "/" + password;
+        Map<String, String> vars = new HashMap<String, String>();
+        vars.put("prorata_user_id", "1");
+        vars.put("email", expected.getEmail());
+        vars.put("password", expected.getPassword());
+
+        final String createUrl = API_URL + "/user";
+        ProrataUserEntity response = restTemplate.postForObject(createUrl, expected, ProrataUserEntity.class, vars);
+        LOGGER.info("POST of a ProrataUserEntity made at " + createUrl);
+        return response;
+    }
+
+    private ProrataUserEntity requestGetProrataUserEntity(String email, String password)
+    {
+        final String signInUrl = API_URL + "/user/" + email + "/" + password;
         ProrataUserEntity response = restTemplate.getForObject(signInUrl, ProrataUserEntity.class);
-        LOGGER.info("Request for a ProrataUserEntity made at " + signInUrl);
+        LOGGER.info("GET for a ProrataUserEntity made at " + signInUrl);
         return response;
     }
 }
