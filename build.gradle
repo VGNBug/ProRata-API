@@ -43,6 +43,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	runtime('org.postgresql:postgresql')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.dbunit:dbunit:2.4.9')
 }
 
 eclipse {
