@@ -1,6 +1,7 @@
 package com.pawsey.prorata.api.controller;
 
 import com.pawsey.prorata.api.ProRataApiApplication;
+import com.pawsey.api.rest.controller.BaseControllerIntegrationTest;
 import com.pawsey.prorata.model.ProrataUserEntity;
 import org.junit.Before;
 import org.junit.Test;
