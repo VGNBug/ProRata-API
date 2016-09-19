@@ -1,0 +1,6 @@
+[submodule "ProRata-Model"]
+	path = ProRata-Model
+	url = http://github.com/VGNBug/ProRata-Model.git
+[submodule "Generic-SpringBoot-API"]
+	path = Generic-SpringBoot-API
+	url = https://github.com/VGNBug/Generic-SpringBoot-API.git
