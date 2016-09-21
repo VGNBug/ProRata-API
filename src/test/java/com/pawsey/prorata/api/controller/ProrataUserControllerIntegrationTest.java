@@ -26,16 +26,14 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     private ProrataUserEntity expected;
 
     @Before
-    private void setup()
-    {
+    private void setup() {
         expected = new ProrataUserEntity();
         expected.setEmail("bob@test.com");
         expected.setPassword("password");
     }
 
     @Test
-    private void testSignIn_SucceedsWithRightEmailRightPassword()
-    {
+    private void testRead_SucceedsWithRightEmailRightPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), expected.getPassword());
 
         assertNotNull(response);
@@ -44,30 +42,26 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     }
 
     @Test
-    private void testSignIn_FailsWithWrongEmailRightPassword()
-    {
+    private void testRead_FailsWithWrongEmailRightPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
 
         assertNull(response);
     }
 
     @Test
-    private void testSignIn_FailsWithRightEmailWrongPassword()
-    {
+    private void testRead_FailsWithRightEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
 
         assertNull(response);
     }
 
     @Test
-    private void testSignIn_FailsWithWrongEmailWrongPassword()
-    {
+    private void testRead_FailsWithWrongEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
     }
 
     // TODO extract this as generic into the superclass
-    private ProrataUserEntity requestCreateProrataUserEntity()
-    {
+    private ProrataUserEntity requestCreateProrataUserEntity() {
         Map<String, String> vars = new HashMap<String, String>();
         vars.put("prorata_user_id", "1");
         vars.put("email", expected.getEmail());
@@ -79,8 +73,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         return response;
     }
 
-    private ProrataUserEntity requestGetProrataUserEntity(String email, String password)
-    {
+    private ProrataUserEntity requestGetProrataUserEntity(String email, String password) {
         final String signInUrl = API_URL + "/user/" + email + "/" + password;
         ProrataUserEntity response = restTemplate.getForObject(signInUrl, ProrataUserEntity.class);
         LOGGER.info("GET for a ProrataUserEntity made at " + signInUrl);
