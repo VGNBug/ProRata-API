@@ -43,6 +43,7 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
         return service.signIn(email, password);
     }
 
+    @Override
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public List<ProrataUserEntity> readAll() {
