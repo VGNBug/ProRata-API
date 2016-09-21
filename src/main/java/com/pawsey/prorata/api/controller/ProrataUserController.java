@@ -46,7 +46,7 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     @Override
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public List<ProrataUserEntity> readAll() {
-        return null;
+    public List<ProrataUserEntity> readAll() throws IllegalAccessException{
+        throw new IllegalAccessException("Requesting details for all users is forbidden.");
     }
 }

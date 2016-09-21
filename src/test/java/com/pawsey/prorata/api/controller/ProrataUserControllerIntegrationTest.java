@@ -14,7 +14,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import javax.persistence.EntityNotFoundException;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -101,6 +103,18 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     public void testRead_FailsWithWrongEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
     }
+
+    /*
+    Read all: Sad paths- no happy path for Read all for this controller
+     */
+    @Override
+    @Test(expected = IllegalAccessException.class)
+    public void testReadAll() {
+        List<ProrataUserEntity> allUsers = restTemplate.getForObject(API_URL + "/user", List.class);
+
+        assertNull(allUsers);
+    }
+
 
     /*
     Update: Happy path
