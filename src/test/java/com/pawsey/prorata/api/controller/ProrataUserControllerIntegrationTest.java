@@ -35,6 +35,15 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         expected.setPassword("password");
     }
 
+    @Test
+    public void testCreate() {
+        ProrataUserEntity response = requestCreateProrataUserEntity();
+
+        assertNotNull(response);
+        assertEquals(expected.getEmail(), response.getEmail());
+        assertEquals(expected.getPassword(), response.getPassword());
+    }
+
     /*
      GET: Happy path
      */
