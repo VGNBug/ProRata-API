@@ -1,7 +1,7 @@
 package com.pawsey.prorata.api.controller;
 
-import com.pawsey.prorata.api.ProRataApiApplication;
 import com.pawsey.api.rest.controller.BaseControllerIntegrationTest;
+import com.pawsey.prorata.api.ProRataApiApplication;
 import com.pawsey.prorata.model.ProrataUserEntity;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +9,9 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import javax.persistence.EntityNotFoundException;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +35,11 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         expected.setPassword("password");
     }
 
+    /*
+     GET: Happy path
+     */
     @Test
-    private void testRead_SucceedsWithRightEmailRightPassword() {
+    public void testRead() {
         ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), expected.getPassword());
 
         assertNotNull(response);
@@ -41,22 +47,25 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertEquals(response.getPassword(), expected.getPassword());
     }
 
-    @Test
-    private void testRead_FailsWithWrongEmailRightPassword() {
+    /*
+    GET: Sad paths
+     */
+    @Test(expected = EntityNotFoundException.class)
+    public void testRead_FailsWithWrongEmailRightPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
 
         assertNull(response);
     }
 
-    @Test
-    private void testRead_FailsWithRightEmailWrongPassword() {
+    @Test(expected = EntityNotFoundException.class)
+    public void testRead_FailsWithRightEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
 
         assertNull(response);
     }
 
-    @Test
-    private void testRead_FailsWithWrongEmailWrongPassword() {
+    @Test(expected = EntityNotFoundException.class)
+    public void testRead_FailsWithWrongEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
     }
 
