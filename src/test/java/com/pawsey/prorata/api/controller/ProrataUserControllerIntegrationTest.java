@@ -35,9 +35,12 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         expected.setPassword("password");
     }
 
+    /*
+    POST: Happy path
+     */
     @Test
     public void testCreate() {
-        ProrataUserEntity response = requestCreateProrataUserEntity();
+        ProrataUserEntity response = requestCreateProrataUserEntity(expected);
 
         assertNotNull(response);
         assertEquals(expected.getEmail(), response.getEmail());
@@ -79,14 +82,14 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     }
 
     // TODO extract this as generic into the superclass
-    private ProrataUserEntity requestCreateProrataUserEntity() {
+    private ProrataUserEntity requestCreateProrataUserEntity(ProrataUserEntity entity) {
         Map<String, String> vars = new HashMap<String, String>();
-        vars.put("prorata_user_id", "1");
-        vars.put("email", expected.getEmail());
-        vars.put("password", expected.getPassword());
+        vars.put("prorata_user_id", entity.getProrataUserId().toString());
+        vars.put("email", entity.getEmail());
+        vars.put("password", entity.getPassword());
 
         final String createUrl = API_URL + "/user";
-        ProrataUserEntity response = restTemplate.postForObject(createUrl, expected, ProrataUserEntity.class, vars);
+        ProrataUserEntity response = restTemplate.postForObject(createUrl, entity, ProrataUserEntity.class, vars);
         LOGGER.info("POST of a ProrataUserEntity made at " + createUrl);
         return response;
     }
