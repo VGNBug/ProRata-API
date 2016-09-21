@@ -41,7 +41,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
      */
     @Test
     public void testCreate() {
-        ProrataUserEntity response = requestCreateProrataUserEntity(expected);
+        ProrataUserEntity response = requestPostProrataUserEntity(API_URL + "/user", expected);
 
         assertNotNull(response);
         assertEquals(expected.getEmail(), response.getEmail());
@@ -53,7 +53,8 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     */
     @Test(expected = Exception.class)
     public void testCreate_NoDataShouldFail() {
-        ProrataUserEntity response = requestCreateProrataUserEntity(null);
+        ProrataUserEntity nullEntity = null;
+        ProrataUserEntity response = requestPostProrataUserEntity(API_URL + "/user", nullEntity);
 
         assertNull(response);
     }
@@ -62,7 +63,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     public void testCreate_MalformattedDataShouldFail() {
         MalformedProrataUserEntity malformed = makeMalformedProrataUserEntity();
 
-        ProrataUserEntity response = this.requestCreateProrataUserEntity(malformed);
+        ProrataUserEntity response = this.requestPostProrataUserEntity(API_URL + "/user", malformed);
 
         assertNull(response);
     }
@@ -80,7 +81,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     }
 
     /*
-    GET: Sad paths
+    Read: Sad paths
      */
     @Test(expected = EntityNotFoundException.class)
     public void testRead_FailsWithWrongEmailRightPassword() {
@@ -101,27 +102,59 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
     }
 
-    private ProrataUserEntity requestCreateProrataUserEntity(ProrataUserEntity entity) {
+    /*
+    Update: Happy path
+     */
+    @Test
+    public void testUpdate() {
+        ProrataUserEntity updatedExpetedUser = new ProrataUserEntity();
+        updatedExpetedUser.setProrataUserId(expected.getProrataUserId());
+        updatedExpetedUser.setEmail(expected.getEmail());
+        updatedExpetedUser.setPassword("newPassword");
+
+        String url = API_URL + "/user/" + expected.getEmail() + "/" + expected.getPassword();
+
+        ProrataUserEntity response = requestPostProrataUserEntity(url, updatedExpetedUser);
+
+        assertNotNull(response);
+        assertEquals(expected.getProrataUserId(), response.getProrataUserId());
+        assertEquals(expected.getEmail(), response.getEmail());
+        assertEquals(expected.getPassword(), response.getPassword());
+    }
+
+    @Test(expected = UnrecognizedPropertyException.class)
+    public void testUpdate_MalformedUserShouldFail() {
+        MalformedProrataUserEntity malformedUpdateUser = new MalformedProrataUserEntity();
+        malformedUpdateUser.setBadId(expected.getProrataUserId());
+        malformedUpdateUser.setBadEmail(expected.getEmail());
+        malformedUpdateUser.setBadPassword("newBadPassword");
+
+        String url = API_URL + "/user" + expected.getEmail() + "/" + expected.getPassword();
+
+        ProrataUserEntity response = requestPostProrataUserEntity(url, malformedUpdateUser);
+
+        assertNull(response);
+    }
+
+    private ProrataUserEntity requestPostProrataUserEntity(String url, ProrataUserEntity entity) {
         Map<String, String> vars = new HashMap<String, String>();
         vars.put("prorata_user_id", entity.getProrataUserId().toString());
         vars.put("email", entity.getEmail());
         vars.put("password", entity.getPassword());
 
-        final String createUrl = API_URL + "/user";
-        ProrataUserEntity response = restTemplate.postForObject(createUrl, entity, ProrataUserEntity.class, vars);
-        LOGGER.info("POST of a ProrataUserEntity made at " + createUrl);
+        ProrataUserEntity response = restTemplate.postForObject(url, entity, ProrataUserEntity.class, vars);
+        LOGGER.info("POST of a ProrataUserEntity made at " + url);
         return response;
     }
 
-    private ProrataUserEntity requestCreateProrataUserEntity(MalformedProrataUserEntity entity) {
+    private ProrataUserEntity requestPostProrataUserEntity(String url, MalformedProrataUserEntity entity) {
         Map<String, String> vars = new HashMap<String, String>();
         vars.put("prorata_user_id", entity.getBadId().toString());
         vars.put("email", entity.getBadEmail());
         vars.put("password", entity.getBadPassword());
 
-        final String createUrl = API_URL + "/user";
-        ProrataUserEntity response = restTemplate.postForObject(createUrl, entity, ProrataUserEntity.class, vars);
-        LOGGER.info("POST of a ProrataUserEntity made at " + createUrl);
+        ProrataUserEntity response = restTemplate.postForObject(url, entity, ProrataUserEntity.class, vars);
+        LOGGER.info("POST of a ProrataUserEntity made at " + url);
         return response;
     }
 
