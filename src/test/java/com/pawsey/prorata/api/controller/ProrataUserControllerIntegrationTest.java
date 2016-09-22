@@ -11,6 +11,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.management.BadAttributeValueExpException;
+import javax.persistence.Entity;
 import javax.persistence.EntityNotFoundException;
 
 
@@ -107,7 +109,6 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     /*
     Read all: Sad paths- no happy path for Read all for this controller
      */
-    @Override
     @Test(expected = IllegalAccessException.class)
     public void testReadAll() {
         List<ProrataUserEntity> allUsers = restTemplate.getForObject(API_URL + "/user", List.class);
@@ -148,6 +149,36 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         ProrataUserEntity response = requestPostProrataUserEntity(url, malformedUpdateUser);
 
         assertNull(response);
+    }
+
+    /*
+    Delete: Happy path
+     */
+    public void testDelete() {
+        makeDeleteRequest("/user/" + expected.getEmail() + "/" + expected.getPassword(), null);
+    }
+
+    /*
+    Delete: Sad paths
+     */
+    @Test(expected = EntityNotFoundException.class)
+    public void testDelete_shouldFailIfSuppliedWithWrongEmail() {
+        makeDeleteRequest("/user/badEmail/" + expected.getPassword(), null);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testDelete_shouldFailIfSuppliedWithRightEmailWrongPassword() {
+        makeDeleteRequest("/user/" + expected.getEmail() + "/badPassword", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDelete_shouldFailIfSuppliedWithNoEmailNoPassword() {
+        makeDeleteRequest("/user", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDelete_shouldFailIfSuppliedWithIdParam() {
+        makeDeleteRequest("/user", expected.getProrataUserId());
     }
 
     private ProrataUserEntity requestPostProrataUserEntity(String url, ProrataUserEntity entity) {
