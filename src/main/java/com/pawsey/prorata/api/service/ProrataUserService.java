@@ -6,4 +6,6 @@ import com.pawsey.prorata.model.ProrataUserEntity;
 public interface ProrataUserService extends BaseService<ProrataUserEntity> {
 
     ProrataUserEntity signIn(String emailHash, String passwordHash);
+
+    void delete(String emailHash, String passwordHash);
 }

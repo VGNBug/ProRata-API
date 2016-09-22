@@ -176,7 +176,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         makeDeleteRequest("/user", null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalAccessException.class)
     public void testDelete_shouldFailIfSuppliedWithIdParam() {
         makeDeleteRequest("/user", expected.getProrataUserId());
     }
