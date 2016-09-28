@@ -4,7 +4,9 @@ import com.pawsey.api.service.impl.BaseServiceImpl;
 import com.pawsey.prorata.api.repository.ProrataUserRepository;
 import com.pawsey.prorata.api.service.ProrataUserService;
 import com.pawsey.prorata.model.ProrataUserEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, ProrataUserRepository> implements ProrataUserService {
 
     @Override
