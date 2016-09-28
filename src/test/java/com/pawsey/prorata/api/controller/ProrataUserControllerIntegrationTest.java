@@ -28,13 +28,14 @@ import static org.junit.Assert.*;
 @WebAppConfiguration
 public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrationTest {
 
+    public static final String CONTROLLER_PATH = "/prorataUser/";
     private final String SAD_PATH_EMAIL = "sadPathEmail@test.com";
     private final String SAD_PATH_PASSWORD = "sadPathPassword";
 
     private ProrataUserEntity expected;
 
     @Before
-    private void setup() {
+    public void setup() {
         expected = new ProrataUserEntity();
         expected.setEmail("bob@test.com");
         expected.setPassword("password");
@@ -45,7 +46,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
      */
     @Test
     public void testCreate() {
-        ProrataUserEntity response = requestPostProrataUserEntity(API_URL + "/user", expected);
+        ProrataUserEntity response = requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, expected);
 
         assertNotNull(response);
         assertEquals(expected.getEmail(), response.getEmail());
@@ -58,7 +59,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     @Test(expected = Exception.class)
     public void testCreate_NoDataShouldFail() {
         ProrataUserEntity nullEntity = null;
-        ProrataUserEntity response = requestPostProrataUserEntity(API_URL + "/user", nullEntity);
+        ProrataUserEntity response = requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, nullEntity);
 
         assertNull(response);
     }
@@ -67,7 +68,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     public void testCreate_MalformattedDataShouldFail() {
         MalformedProrataUserEntity malformed = makeMalformedProrataUserEntity();
 
-        ProrataUserEntity response = this.requestPostProrataUserEntity(API_URL + "/user", malformed);
+        ProrataUserEntity response = this.requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, malformed);
 
         assertNull(response);
     }
@@ -107,17 +108,6 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     }
 
     /*
-    Read all: Sad paths- no happy path for Read all for this controller
-     */
-    @Test(expected = IllegalAccessException.class)
-    public void testReadAll() {
-        List<ProrataUserEntity> allUsers = restTemplate.getForObject(API_URL + "/user", List.class);
-
-        assertNull(allUsers);
-    }
-
-
-    /*
     Update: Happy path
      */
     @Test
@@ -127,9 +117,10 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         updatedExpetedUser.setEmail(expected.getEmail());
         updatedExpetedUser.setPassword("newPassword");
 
-        String url = API_URL + "/user/" + expected.getEmail() + "/" + expected.getPassword();
+        String url = API_URL + CONTROLLER_PATH + expected.getEmail() + "/" + expected.getPassword();
 
-        ProrataUserEntity response = requestPostProrataUserEntity(url, updatedExpetedUser);
+        restTemplate.put(url, updatedExpetedUser);
+        ProrataUserEntity response = requestGetProrataUserEntity(updatedExpetedUser.getEmail(), updatedExpetedUser.getPassword());
 
         assertNotNull(response);
         assertEquals(expected.getProrataUserId(), response.getProrataUserId());
@@ -137,16 +128,20 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertEquals(expected.getPassword(), response.getPassword());
     }
 
+    /**
+     * Update- Sad paths
+     */
     @Test(expected = UnrecognizedPropertyException.class)
     public void testUpdate_MalformedUserShouldFail() {
         MalformedProrataUserEntity malformedUpdateUser = new MalformedProrataUserEntity();
-        malformedUpdateUser.setBadId(expected.getProrataUserId());
+        malformedUpdateUser.setBadId(-1);
         malformedUpdateUser.setBadEmail(expected.getEmail());
         malformedUpdateUser.setBadPassword("newBadPassword");
 
-        String url = API_URL + "/user" + expected.getEmail() + "/" + expected.getPassword();
+        String url = API_URL + CONTROLLER_PATH + expected.getEmail() + "/" + expected.getPassword();
 
-        ProrataUserEntity response = requestPostProrataUserEntity(url, malformedUpdateUser);
+        restTemplate.put(url, malformedUpdateUser);
+        ProrataUserEntity response = requestGetProrataUserEntity(malformedUpdateUser.getBadEmail(), malformedUpdateUser.getBadPassword());
 
         assertNull(response);
     }
@@ -155,7 +150,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     Delete: Happy path
      */
     public void testDelete() {
-        makeDeleteRequest("/user/" + expected.getEmail() + "/" + expected.getPassword(), null);
+        makeDeleteRequest(CONTROLLER_PATH + expected.getEmail() + "/" + expected.getPassword(), null);
     }
 
     /*
@@ -168,17 +163,17 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
 
     @Test(expected = EntityNotFoundException.class)
     public void testDelete_shouldFailIfSuppliedWithRightEmailWrongPassword() {
-        makeDeleteRequest("/user/" + expected.getEmail() + "/badPassword", null);
+        makeDeleteRequest(CONTROLLER_PATH + expected.getEmail() + "/badPassword", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testDelete_shouldFailIfSuppliedWithNoEmailNoPassword() {
-        makeDeleteRequest("/user", null);
+        makeDeleteRequest(CONTROLLER_PATH, null);
     }
 
     @Test(expected = IllegalAccessException.class)
     public void testDelete_shouldFailIfSuppliedWithIdParam() {
-        makeDeleteRequest("/user", expected.getProrataUserId());
+        makeDeleteRequest(CONTROLLER_PATH, expected.getProrataUserId());
     }
 
     private ProrataUserEntity requestPostProrataUserEntity(String url, ProrataUserEntity entity) {
@@ -204,7 +199,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     }
 
     private ProrataUserEntity requestGetProrataUserEntity(String email, String password) {
-        final String signInUrl = API_URL + "/user/" + email + "/" + password;
+        final String signInUrl = API_URL + CONTROLLER_PATH + email + "/" + password;
         ProrataUserEntity response = restTemplate.getForObject(signInUrl, ProrataUserEntity.class);
         LOGGER.info("GET for a ProrataUserEntity made at " + signInUrl);
         return response;
