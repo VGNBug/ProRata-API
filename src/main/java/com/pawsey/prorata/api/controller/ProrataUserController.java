@@ -3,6 +3,9 @@ package com.pawsey.prorata.api.controller;
 import com.pawsey.api.rest.controller.BaseRestController;
 import com.pawsey.prorata.api.service.ProrataUserService;
 import com.pawsey.prorata.model.ProrataUserEntity;
+import org.omg.CORBA.Any;
+import org.omg.CORBA.Context;
+import org.omg.CORBA.NVList;
 import org.omg.CORBA.Request;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +14,9 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/prorataUser")
 public class ProrataUserController extends BaseRestController<ProrataUserEntity, ProrataUserService> {
+
     /**
      * GET by id is overriden for user access. to ensure that the correct 'signIn' method is used.'
      */
@@ -20,7 +24,7 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ProrataUserEntity read(@PathVariable Integer id) throws EntityNotFoundException {
-        return null;
+        throw new EntityNotFoundException("Please provide sign-in details");
     }
 
     /**
@@ -41,19 +45,6 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
                                   //@formatter:on
     ) throws EntityNotFoundException {
         return service.signIn(email, password);
-    }
-
-    /**
-     * Safeguard endpoint to prevent users from attempting to request all users.
-     *
-     * @return
-     * @throws IllegalAccessException communicating that requesting all users is forbidden.
-     */
-    @Override
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public List<ProrataUserEntity> readAll() throws IllegalAccessException {
-        throw new IllegalAccessException("Requesting details for all users is forbidden.");
     }
 
     /**
