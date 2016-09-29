@@ -1,5 +1,6 @@
 package com.pawsey.prorata.api.controller;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.pawsey.api.rest.controller.BaseControllerIntegrationTest;
 import com.pawsey.prorata.api.ProRataApiApplication;
 import com.pawsey.prorata.model.ProrataUserEntity;
@@ -9,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.persistence.EntityNotFoundException;
@@ -85,21 +87,21 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     /*
     Read: Sad paths
      */
-    @Test(expected = HttpServerErrorException.class)
+    @Test(expected = HttpClientErrorException.class)
     public void testRead_FailsWithWrongEmailRightPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
 
         assertNull(response);
     }
 
-    @Test(expected = HttpServerErrorException.class)
+    @Test(expected = HttpClientErrorException.class)
     public void testRead_FailsWithRightEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
 
         assertNull(response);
     }
 
-    @Test(expected = HttpServerErrorException.class)
+    @Test(expected = HttpClientErrorException.class)
     public void testRead_FailsWithWrongEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
     }
@@ -128,21 +130,20 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     /**
      * Update- Sad paths
      */
-    // TODO investigate why UnrecognizedPropertyExceptions are not being thrown
-//    @Test(expected = UnrecognizedPropertyException.class)
-//    public void testUpdate_MalformedUserShouldFail() {
-//        MalformedProrataUserEntity malformedUpdateUser = new MalformedProrataUserEntity();
-//        malformedUpdateUser.setBadId(-1);
-//        malformedUpdateUser.setBadEmail(expected.getEmail());
-//        malformedUpdateUser.setBadPassword("newBadPassword");
-//
-//        String url = API_URL + CONTROLLER_PATH;
-//
-//        restTemplate.put(url, malformedUpdateUser);
-//        ProrataUserEntity response = requestGetProrataUserEntity(malformedUpdateUser.getBadEmail(), malformedUpdateUser.getBadPassword());
-//
-//        assertNull(response);
-//    }
+    @Test(expected = HttpServerErrorException.class)
+    public void testUpdate_MalformedUserShouldFail() {
+        MalformedProrataUserEntity malformedUpdateUser = new MalformedProrataUserEntity();
+        malformedUpdateUser.setBadId(-1);
+        malformedUpdateUser.setBadEmail(expected.getEmail());
+        malformedUpdateUser.setBadPassword("newBadPassword");
+
+        String url = API_URL + CONTROLLER_PATH;
+
+        restTemplate.put(url, malformedUpdateUser);
+        ProrataUserEntity response = requestGetProrataUserEntity(malformedUpdateUser.getBadEmail(), malformedUpdateUser.getBadPassword());
+
+        assertNull(response);
+    }
 
     /*
     Delete: Happy path
