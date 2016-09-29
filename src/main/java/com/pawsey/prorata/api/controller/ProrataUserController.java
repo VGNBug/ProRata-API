@@ -3,19 +3,36 @@ package com.pawsey.prorata.api.controller;
 import com.pawsey.api.rest.controller.BaseRestController;
 import com.pawsey.prorata.api.service.ProrataUserService;
 import com.pawsey.prorata.model.ProrataUserEntity;
-import org.omg.CORBA.Any;
-import org.omg.CORBA.Context;
-import org.omg.CORBA.NVList;
-import org.omg.CORBA.Request;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
+import javax.persistence.PersistenceException;
+import javax.security.auth.login.CredentialException;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/prorataUser")
 public class ProrataUserController extends BaseRestController<ProrataUserEntity, ProrataUserService> {
+
+    public ProrataUserController() {
+        exampleEntity = new ProrataUserEntity();
+    }
+
+    /**
+     * Creates a new {@link com.pawsey.prorata.model.ProrataUserEntity}
+     *
+     * @param newUser A {@link java.util.Map} of properties corresponding to those of
+     *                {@link com.pawsey.prorata.model.ProrataUserEntity}
+     * @return A newly persisted {@link com.pawsey.prorata.model.ProrataUserEntity}
+     * @throws PersistenceException if the data cannot be persisted and / or returned.
+     */
+    @Override
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProrataUserEntity create(final @RequestBody Map<String, Object> newUser) throws PersistenceException {
+        return super.create(newUser);
+    }
 
     /**
      * GET by id is overriden for user access. to ensure that the correct 'signIn' method is used.'
@@ -43,14 +60,40 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     public ProrataUserEntity read(@PathVariable String email,
                                   @PathVariable String password
                                   //@formatter:on
-    ) throws EntityNotFoundException {
-        return service.signIn(email, password);
+    ) throws ProrataUserNotFoundException, CredentialException {
+
+        try {
+            return service.signIn(email, password);
+        } catch(EntityNotFoundException e) {
+            throw e;
+        }
+//
+//        if(response != null) {
+//            return response;
+//        } else {
+//            throw new ProrataUserNotFoundException();
+//        }
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Incorrect email address")
+    @ExceptionHandler(EntityNotFoundException.class)
+    public void badEmailExceptionHandler() {}
+
+    @ResponseStatus(value = HttpStatus.EXPECTATION_FAILED, reason = "Incorrect password")
+    @ExceptionHandler(CredentialException.class)
+    public void badPasswordExceptionHandler() {}
+
+    @Override
+    @RequestMapping(method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ProrataUserEntity update(@RequestBody Map<String, Object> updateUser) throws CredentialException {
+        return super.update(updateUser);
     }
 
     /**
      * Allows a user to be deleted when a valid email and password are supplied.
      *
-     * @param email The {@link com.pawsey.prorata.model.ProrataUserEntity#email} attribute of the user to be deleted.
+     * @param email    The {@link com.pawsey.prorata.model.ProrataUserEntity#email} attribute of the user to be deleted.
      * @param password The {@link com.pawsey.prorata.model.ProrataUserEntity#password} attribute of the user to be
      *                 deleted.
      * @throws EntityNotFoundException If no such user can be found.
@@ -61,18 +104,18 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     public void delete(@PathVariable String email,
                        @PathVariable String password
                        //@formatter:on
-    ) throws EntityNotFoundException {
+    ) throws EntityNotFoundException, CredentialException {
         service.delete(email, password);
     }
 
     /**
      * <p>
-     *     Safeguard endpoint to prevent attempts to delete users by their
-     *     {@link com.pawsey.prorata.model.ProrataUserEntity#prorataUserId} attribute.
+     * Safeguard endpoint to prevent attempts to delete users by their
+     * {@link com.pawsey.prorata.model.ProrataUserEntity#prorataUserId} attribute.
      * </p>
      * <p>
-     *     {@link com.pawsey.prorata.api.controller.ProrataUserController#delete(String, String)}
-     *     should be used instead.
+     * {@link com.pawsey.prorata.api.controller.ProrataUserController#delete(String, String)}
+     * should be used instead.
      * </p>
      *
      * @param id The database ID of the entity of the type to be deleted.
