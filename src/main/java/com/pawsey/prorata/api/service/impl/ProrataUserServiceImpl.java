@@ -27,15 +27,15 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     }
 
     @Override
-    public ProrataUserEntity update(ProrataUserEntity entity) throws CredentialException {
-        if (checkCredentialsForProrataUserEntity(entity.getEmail(), entity.getPassword()) != null) {
+    public ProrataUserEntity update(ProrataUserEntity entity, String email, String password) throws CredentialException {
+        if (checkCredentialsForProrataUserEntity(email, password) != null) {
             return super.update(entity);
         } else throw new IllegalArgumentException("Entity to be updated must contain an email and password");
     }
 
     @Override
-    public void delete(String emailHash, String passwordHash) throws CredentialException {
-        final ProrataUserEntity entityToBeDeleted = checkCredentialsForProrataUserEntity(emailHash, passwordHash);
+    public void delete(String email, String password) throws CredentialException {
+        final ProrataUserEntity entityToBeDeleted = checkCredentialsForProrataUserEntity(email, password);
         if (entityToBeDeleted != null) {
             super.delete(entityToBeDeleted);
         } else {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.pawsey.api.rest.controller.BaseControllerIntegrationTest;
 import com.pawsey.prorata.api.ProRataApiApplication;
 import com.pawsey.prorata.model.ProrataUserEntity;
+import org.hibernate.validator.constraints.Email;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,12 +112,12 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
      */
     @Test
     public void testUpdate() {
-        ProrataUserEntity updatedExpetedUser = new ProrataUserEntity();
-        updatedExpetedUser.setProrataUserId(expected.getProrataUserId());
-        updatedExpetedUser.setEmail(expected.getEmail());
-        updatedExpetedUser.setPassword("newPassword");
+        ProrataUserEntity updatedExpetedUser = expected;
 
-        String url = API_URL + CONTROLLER_PATH + expected.getEmail() + "/" + expected.getPassword();
+        String url = API_URL + CONTROLLER_PATH + "/" + expected.getEmail() + "/" + expected.getPassword();
+
+        updatedExpetedUser.setPassword("newPassword");
+        updatedExpetedUser.setProrataUserId(1);
 
         restTemplate.put(url, updatedExpetedUser);
         ProrataUserEntity response = requestGetProrataUserEntity(updatedExpetedUser.getEmail(), updatedExpetedUser.getPassword());
@@ -137,7 +138,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         malformedUpdateUser.setBadEmail(expected.getEmail());
         malformedUpdateUser.setBadPassword("newBadPassword");
 
-        String url = API_URL + CONTROLLER_PATH;
+        String url = API_URL + CONTROLLER_PATH + "/" + expected.getEmail() + "/" + expected.getPassword();
 
         restTemplate.put(url, malformedUpdateUser);
         ProrataUserEntity response = requestGetProrataUserEntity(malformedUpdateUser.getBadEmail(), malformedUpdateUser.getBadPassword());

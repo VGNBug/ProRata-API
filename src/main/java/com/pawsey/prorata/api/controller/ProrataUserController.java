@@ -35,16 +35,6 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     }
 
     /**
-     * GET by id is overriden for user access. to ensure that the correct 'signIn' method is used.'
-     */
-    @Override
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ProrataUserEntity read(@PathVariable Integer id) throws EntityNotFoundException {
-        throw new EntityNotFoundException("Please provide sign-in details");
-    }
-
-    /**
      * This corresponds to a "sign-in" endpoint, requiring a user's email and password to read data.
      *
      * @param email    The {@link com.pawsey.prorata.model.ProrataUserEntity#email email address} of the ProrataUserEntity
@@ -56,38 +46,21 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
      */
     @RequestMapping(value = "/{email}/{password}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    //@formatter:off
     public ProrataUserEntity read(@PathVariable String email,
-                                  @PathVariable String password
-                                  //@formatter:on
-    ) throws ProrataUserNotFoundException, CredentialException {
-
+                                  @PathVariable String password) throws ProrataUserNotFoundException, CredentialException {
         try {
             return service.signIn(email, password);
-        } catch(EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw e;
         }
-//
-//        if(response != null) {
-//            return response;
-//        } else {
-//            throw new ProrataUserNotFoundException();
-//        }
     }
 
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Incorrect email address")
-    @ExceptionHandler(EntityNotFoundException.class)
-    public void badEmailExceptionHandler() {}
-
-    @ResponseStatus(value = HttpStatus.EXPECTATION_FAILED, reason = "Incorrect password")
-    @ExceptionHandler(CredentialException.class)
-    public void badPasswordExceptionHandler() {}
-
-    @Override
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(value = "{email}/{password}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ProrataUserEntity update(@RequestBody Map<String, Object> updateUser) throws CredentialException {
-        return super.update(updateUser);
+    public ProrataUserEntity update(@PathVariable String email,
+                                    @PathVariable String password,
+                                    @RequestBody Map<String, Object> updateUser) throws CredentialException {
+        return service.update(mapper.convertValue(updateUser, ProrataUserEntity.class), email, password);
     }
 
     /**
@@ -96,36 +69,24 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
      * @param email    The {@link com.pawsey.prorata.model.ProrataUserEntity#email} attribute of the user to be deleted.
      * @param password The {@link com.pawsey.prorata.model.ProrataUserEntity#password} attribute of the user to be
      *                 deleted.
-     * @throws EntityNotFoundException If no such user can be found.
+     * @throws EntityNotFoundException if no such user can be found
+     * @throws CredentialException     if a user with that email address is found, but the wrong password has been supplied.
      */
     @RequestMapping(value = "/{email}/{password}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    //@formatter:off
     public void delete(@PathVariable String email,
                        @PathVariable String password
-                       //@formatter:on
     ) throws EntityNotFoundException, CredentialException {
         service.delete(email, password);
     }
 
-    /**
-     * <p>
-     * Safeguard endpoint to prevent attempts to delete users by their
-     * {@link com.pawsey.prorata.model.ProrataUserEntity#prorataUserId} attribute.
-     * </p>
-     * <p>
-     * {@link com.pawsey.prorata.api.controller.ProrataUserController#delete(String, String)}
-     * should be used instead.
-     * </p>
-     *
-     * @param id The database ID of the entity of the type to be deleted.
-     * @throws Exception An illegal access exception to illustrate that this endpoint shouldn't be used.
-     */
-    @Override
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public void delete(@PathVariable Integer id) throws Exception {
-        throw new IllegalAccessException("Deleting a user by their ID value is forbidden. " +
-                "Please provide the email address and password of the user to be deleted.");
+    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Incorrect email address")
+    @ExceptionHandler(EntityNotFoundException.class)
+    public void badEmailExceptionHandler() {
+    }
+
+    @ResponseStatus(value = HttpStatus.EXPECTATION_FAILED, reason = "Incorrect password")
+    @ExceptionHandler(CredentialException.class)
+    public void badPasswordExceptionHandler() {
     }
 }

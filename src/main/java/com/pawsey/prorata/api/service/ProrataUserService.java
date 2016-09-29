@@ -9,5 +9,7 @@ public interface ProrataUserService extends BaseService<ProrataUserEntity> {
 
     ProrataUserEntity signIn(String emailHash, String passwordHash) throws CredentialException;
 
-    void delete(String emailHash, String passwordHash) throws CredentialException;
+    void delete(String email, String password) throws CredentialException;
+
+    ProrataUserEntity update(ProrataUserEntity entity, String email, String password) throws CredentialException;
 }
