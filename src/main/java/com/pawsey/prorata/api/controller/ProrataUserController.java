@@ -55,12 +55,22 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
         }
     }
 
+    /**
+     * Updates an existing {@link com.pawsey.prorata.model.ProrataUserEntity}.
+     *
+     * @param email The email address of the user to be updated, which is used to find the entity in the database.
+     * @param password The password of the user to be updated, which must match for the update to be allowed.
+     * @param updateUser A map of how the user's data will appear once updated.
+     * @return The updated {@link com.pawsey.prorata.model.ProrataUserEntity}.
+     * @throws CredentialException if the supplied password path-variable does not match the existing user's password.
+     * @throws PersistenceException if the user is unable to be updated.
+     */
     @RequestMapping(value = "{email}/{password}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ProrataUserEntity update(@PathVariable String email,
                                     @PathVariable String password,
-                                    @RequestBody Map<String, Object> updateUser) throws CredentialException {
-        return service.update(mapper.convertValue(updateUser, ProrataUserEntity.class), email, password);
+                                    final @RequestBody Map<String, Object> updateUser) throws CredentialException, PersistenceException {
+        return service.update(mapper.convertValue(updateUser, exampleEntity.getClass()), email, password);
     }
 
     /**

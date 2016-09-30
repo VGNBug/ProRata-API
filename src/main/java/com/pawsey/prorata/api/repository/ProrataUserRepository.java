@@ -9,8 +9,7 @@ import java.io.Serializable;
 /**
  * Repository : ProrataUser.
  */
-public interface ProrataUserRepository extends BaseRepository<ProrataUserEntity, Integer>
-{
+public interface ProrataUserRepository extends BaseRepository<ProrataUserEntity, Integer> {
     @Query("SELECT p FROM ProrataUserEntity p WHERE p.email = ?1")
     ProrataUserEntity findByEmail(String email);
 }
