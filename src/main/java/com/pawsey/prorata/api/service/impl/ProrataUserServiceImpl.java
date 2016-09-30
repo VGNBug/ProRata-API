@@ -43,21 +43,6 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         }
     }
 
-    @Override
-    protected void persistCollections(ProrataUserEntity prorataUserEntity, ProrataUserEntity t1) {
-
-    }
-
-    @Override
-    protected ProrataUserEntity initializeCollections(ProrataUserEntity prorataUserEntity) {
-        return null;
-    }
-
-    @Override
-    protected boolean entityIsNull(ProrataUserEntity prorataUserEntity) {
-        return false;
-    }
-
     private ProrataUserEntity checkCredentialsForProrataUserEntity(String emailHash, String passwordHash) throws EntityNotFoundException, CredentialException {
         ProrataUserEntity response = null;
         if (!emailHash.isEmpty() && !passwordHash.isEmpty()) {

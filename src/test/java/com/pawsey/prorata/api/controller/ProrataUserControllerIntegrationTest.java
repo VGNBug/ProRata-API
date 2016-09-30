@@ -1,10 +1,8 @@
 package com.pawsey.prorata.api.controller;
 
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.pawsey.api.rest.controller.BaseControllerIntegrationTest;
 import com.pawsey.prorata.api.ProRataApiApplication;
-import com.pawsey.prorata.model.ProrataUserEntity;
-import org.hibernate.validator.constraints.Email;
+import com.pawsey.prorata.model.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +12,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -44,13 +40,26 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
      */
     @Test
     public void testCreate() {
+
         ProrataUserEntity newUser = expected;
         newUser.setEmail("newUser@test.com");
+
+        Date now = Calendar.getInstance().getTime();
+        newUser.setListOfSubscription(makeSubscriptionsList(now));
+        newUser.setListOfAccount(makeAccountsList());
+        newUser.setListOfUserContact(makeUserContactsList());
+        newUser.setListOfEmployment(makeEmploymentsList(now));
+
         ProrataUserEntity response = requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, newUser);
 
         assertNotNull(response);
+        assertNotNull(response.getProrataUserId());
         assertEquals(expected.getEmail(), response.getEmail());
         assertEquals(expected.getPassword(), response.getPassword());
+        assertEquals(makeSubscription(now).toString(), response.getListOfSubscription().get(makeSubscriptionsList(now).size() - 1).toString());
+        assertEquals(makeAccount(makeBank()).toString(), response.getListOfAccount().get(makeAccountsList().size() - 1).toString());
+        assertEquals(makeUserContact().toString(), response.getListOfUserContact().get(makeUserContactsList().size() -1).toString());
+        assertEquals(makeEmployment(makeEmployer(), now).toString(), response.getListOfEmployment().get(makeEmploymentsList(now).size() - 1).toString());
     }
 
     /*
@@ -119,6 +128,12 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         updatedExpetedUser.setPassword("newPassword");
         updatedExpetedUser.setProrataUserId(1);
 
+        Date now = Calendar.getInstance().getTime();
+        updatedExpetedUser.setListOfSubscription(makeSubscriptionsList(now));
+        updatedExpetedUser.setListOfAccount(makeAccountsList());
+        updatedExpetedUser.setListOfUserContact(makeUserContactsList());
+        updatedExpetedUser.setListOfEmployment(makeEmploymentsList(now));
+
         restTemplate.put(url, updatedExpetedUser);
         ProrataUserEntity response = requestGetProrataUserEntity(updatedExpetedUser.getEmail(), updatedExpetedUser.getPassword());
 
@@ -126,6 +141,10 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertEquals(expected.getProrataUserId(), response.getProrataUserId());
         assertEquals(expected.getEmail(), response.getEmail());
         assertEquals(expected.getPassword(), response.getPassword());
+        assertEquals(makeSubscription(now).toString(), response.getListOfSubscription().get(makeSubscriptionsList(now).size() - 1).toString());
+        assertEquals(makeAccount(makeBank()).toString(), response.getListOfAccount().get(makeAccountsList().size() - 1).toString());
+        assertEquals(makeUserContact().toString(), response.getListOfUserContact().get(makeUserContactsList().size() -1).toString());
+        assertEquals(makeEmployment(makeEmployer(), now).toString(), response.getListOfEmployment().get(makeEmploymentsList(now).size() - 1).toString());
     }
 
     /**
@@ -211,6 +230,96 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         malformed.setBadEmail("bob@test.com");
         malformed.setBadPassword("password");
         return malformed;
+    }
+
+    private List<SubscriptionEntity> makeSubscriptionsList(Date date) {
+        SubscriptionEntity sub = makeSubscription(date);
+
+        List<SubscriptionEntity> subscriptions = new ArrayList<>();
+        subscriptions.add(sub);
+
+        return subscriptions;
+    }
+
+    private SubscriptionEntity makeSubscription(Date date) {
+        SubscriptionEntity sub = new SubscriptionEntity();
+//        sub.setSubscriptionId(1);
+        sub.setStartDateTime(date);
+        return sub;
+    }
+
+    private List<EmploymentEntity> makeEmploymentsList(Date date){
+        EmployerEntity employer = makeEmployer();
+
+        EmploymentEntity employment = makeEmployment(employer, date);
+
+        List<EmploymentEntity> employments = new ArrayList<>();
+        employments.add(employment);
+
+        return employments;
+    }
+
+    private EmployerEntity makeEmployer() {
+        EmployerEntity employer = new EmployerEntity();
+        employer.setEmployerId(1);
+        employer.setName("Test employer");
+        employer.setOfficeAddress("43 Fibbers Alley, Testinghamshire");
+        employer.setOfficePostcode("TE1 4RE");
+        return employer;
+    }
+
+    private EmploymentEntity makeEmployment(EmployerEntity employer, Date date) {
+        EmploymentEntity employment = new EmploymentEntity();
+//        employment.setEmploymentId(1);
+        employment.setEmployer(employer);
+        employment.setHourlyRate(new BigDecimal(10));
+        employment.setHoursPerWeek(new BigDecimal(40));
+        employment.setName("employment with " + employer.getName());
+        employment.setStartDate(date);
+        return employment;
+    }
+
+    private List<AccountEntity> makeAccountsList() {
+        BankEntity bank = makeBank();
+
+        AccountEntity account = makeAccount(bank);
+
+        List<AccountEntity> accounts = new ArrayList<>();
+        accounts.add(account);
+
+        return accounts;
+    }
+
+    private BankEntity makeBank() {
+        BankEntity bank = new BankEntity();
+        bank.setBankId(2);
+        bank.setName("test bank");
+        return bank;
+    }
+
+    private AccountEntity makeAccount(BankEntity bank) {
+        AccountEntity account = new AccountEntity();
+//        account.setAccountId(1);
+        account.setAccountNumber("12345678");
+        account.setBank(bank);
+        return account;
+    }
+
+    private List<UserContactEntity> makeUserContactsList(){
+        UserContactEntity contact = makeUserContact();
+
+        List<UserContactEntity> contacts = new ArrayList<>();
+        contacts.add(contact);
+
+        return contacts;
+    }
+
+    private UserContactEntity makeUserContact() {
+        UserContactEntity contact = new UserContactEntity();
+        contact.setContactName("test contact");
+        contact.setContactType("test");
+//        contact.setUserContactId(1);
+        return contact;
     }
 
     private class MalformedProrataUserEntity {
