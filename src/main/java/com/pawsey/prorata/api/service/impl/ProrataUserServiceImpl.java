@@ -46,7 +46,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         ProrataUserEntity persistedUser = super.create(user);
         persistCollections(user, persistedUser);
 
-        if(user.getListOfSubscription() == null || user.getListOfSubscription().isEmpty()) {
+        if (user.getListOfSubscription() == null || user.getListOfSubscription().isEmpty()) {
             setDefaultSubscription(persistedUser);
         }
 
@@ -56,31 +56,10 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     @Override
     @Transactional
     public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws CredentialException {
-        String stateMessage;
-
-        if (user != null && email != null && password != null) {
-            ProrataUserEntity checkedUser = checkCredentials(email, password);
-
-            if (checkedUser != null) {
-                user.setProrataUserId(checkedUser.getProrataUserId());
-
-                ProrataUserEntity persistedUser = super.update(user);
-                persistCollections(user, persistedUser);
-
-                return persistedUser;
-            } else {
-                stateMessage = "Incorrect username or pasword.";
-                IllegalArgumentException e = new IllegalArgumentException(stateMessage);
-                LOGGER.error(stateMessage, e);
-                throw e;
-            }
-
-        } else {
-            stateMessage = "update user failed: Neither email nor password can be null";
-            IllegalArgumentException e = new IllegalArgumentException(stateMessage);
-            LOGGER.error(e);
-            throw e;
-        }
+        if (checkCredentials(email, password) != null) {
+            persistCollections(user, super.update(user));
+            return checkCredentials(email, password);
+        } else throw new IllegalArgumentException("Entity to be updated must contain an email and password");
     }
 
     @Override
@@ -128,6 +107,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         super.delete(checkCredentials(email, password));
     }
 
+    @Transactional
     private ProrataUserEntity checkCredentials(String email, String password) {
         ProrataUserEntity response = null;
 
@@ -219,7 +199,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         SubscriptionEntity subscription = new SubscriptionEntity();
         subscription.setStartDateTime(Calendar.getInstance().getTime());
         subscription.setProrataUser(persistedUser);
-        if(subscriptionTypeJpaRepository.findByName("standard") != null) {
+        if (subscriptionTypeJpaRepository.findByName("standard") != null) {
             subscription.setSubscriptionType(subscriptionTypeJpaRepository.findByName("standard"));
         } else {
             SubscriptionTypeEntity type = new SubscriptionTypeEntity();
@@ -250,8 +230,8 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
             }
         }
 
-        if(user.getListOfSubscription() != null) {
-            for(SubscriptionEntity subscription : user.getListOfSubscription()) {
+        if (user.getListOfSubscription() != null) {
+            for (SubscriptionEntity subscription : user.getListOfSubscription()) {
                 Hibernate.initialize(subscription.getSubscriptionType());
             }
         }
