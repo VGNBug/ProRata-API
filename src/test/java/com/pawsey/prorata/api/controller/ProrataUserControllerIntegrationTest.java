@@ -97,21 +97,21 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     /*
     Read: Sad paths
      */
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = HttpServerErrorException.class)
     public void testRead_FailsWithWrongEmailRightPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
 
         assertNull(response);
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = HttpServerErrorException.class)
     public void testRead_FailsWithRightEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
 
         assertNull(response);
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = HttpServerErrorException.class)
     public void testRead_FailsWithWrongEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
     }
