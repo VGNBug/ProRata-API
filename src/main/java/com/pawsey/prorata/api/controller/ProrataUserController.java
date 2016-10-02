@@ -49,7 +49,8 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     public ProrataUserEntity read(@PathVariable String email,
                                   @PathVariable String password) throws ProrataUserNotFoundException, CredentialException {
         try {
-            return service.signIn(email, password);
+            ProrataUserEntity response = service.signIn(email, password);
+            return response;
         } catch (EntityNotFoundException e) {
             throw e;
         }

@@ -125,13 +125,13 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
 
         String url = API_URL + CONTROLLER_PATH + "/" + expected.getEmail() + "/" + expected.getPassword();
 
-        updatedExpetedUser.setPassword("newPassword");
+        updatedExpetedUser.setPassword("newPswd");
         updatedExpetedUser.setProrataUserId(1);
 
         Date now = Calendar.getInstance().getTime();
         updatedExpetedUser.setListOfSubscription(makeSubscriptionsList(now));
         updatedExpetedUser.setListOfAccount(makeAccountsList());
-        updatedExpetedUser.setListOfUserContact(makeUserContactsList());
+//        updatedExpetedUser.setListOfUserContact(makeUserContactsList());
         updatedExpetedUser.setListOfEmployment(makeEmploymentsList(now));
 
         restTemplate.put(url, updatedExpetedUser);
@@ -141,10 +141,10 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertEquals(expected.getProrataUserId(), response.getProrataUserId());
         assertEquals(expected.getEmail(), response.getEmail());
         assertEquals(expected.getPassword(), response.getPassword());
-        assertEquals(makeSubscription(now).toString(), response.getListOfSubscription().get(makeSubscriptionsList(now).size() - 1).toString());
-        assertEquals(makeAccount(makeBank()).toString(), response.getListOfAccount().get(makeAccountsList().size() - 1).toString());
-        assertEquals(makeUserContact().toString(), response.getListOfUserContact().get(makeUserContactsList().size() -1).toString());
-        assertEquals(makeEmployment(makeEmployer(), now).toString(), response.getListOfEmployment().get(makeEmploymentsList(now).size() - 1).toString());
+        assertEquals(makeSubscription(now).getSubscriptionType().getName(), response.getListOfSubscription().get(0).getSubscriptionType().getName());
+        assertEquals(makeAccount(makeBank()).getAccountNumber().toString(), response.getListOfAccount().get(makeAccountsList().size() - 1).getAccountNumber().toString());
+//        assertEquals(makeUserContact().toString(), response.getListOfUserContact().get(makeUserContactsList().size() -1).toString());
+        assertEquals(makeEmployment(makeEmployer(), now).getName(), response.getListOfEmployment().get(makeEmploymentsList(now).size() - 1).getName());
     }
 
     /**
@@ -155,7 +155,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         MalformedProrataUserEntity malformedUpdateUser = new MalformedProrataUserEntity();
         malformedUpdateUser.setBadId(-1);
         malformedUpdateUser.setBadEmail(expected.getEmail());
-        malformedUpdateUser.setBadPassword("newBadPassword");
+        malformedUpdateUser.setBadPassword("newBad");
 
         String url = API_URL + CONTROLLER_PATH + "/" + expected.getEmail() + "/" + expected.getPassword();
 
@@ -243,9 +243,17 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
 
     private SubscriptionEntity makeSubscription(Date date) {
         SubscriptionEntity sub = new SubscriptionEntity();
-//        sub.setSubscriptionId(1);
         sub.setStartDateTime(date);
+        sub.setSubscriptionType(makeSubscriptionType());
         return sub;
+    }
+
+    private SubscriptionTypeEntity makeSubscriptionType() {
+        SubscriptionTypeEntity type = new SubscriptionTypeEntity();
+        type.setSubscriptionTypeId(1);
+        type.setName("standard");
+        type.setRate(new BigDecimal(0));
+        return type;
     }
 
     private List<EmploymentEntity> makeEmploymentsList(Date date){
