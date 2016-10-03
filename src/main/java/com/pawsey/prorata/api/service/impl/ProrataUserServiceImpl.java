@@ -48,7 +48,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         persistCollections(user, persistedUser);
 
         if (user.getListOfSubscription() == null || user.getListOfSubscription().isEmpty()) {
-            setDefaultSubscription(persistedUser);
+            persistedUser = setDefaultSubscription(persistedUser);
         }
 
         return checkCredentials(persistedUser.getEmail(), persistedUser.getPassword());
@@ -64,9 +64,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
                 user.setProrataUserId(repository.findByEmail(email).getProrataUserId());
                 ProrataUserEntity response = super.update(user);
                 if (user.getListOfSubscription() == null) {
-                    setDefaultSubscription(response);
-                    Hibernate.initialize(user.getListOfSubscription());
-                    Hibernate.initialize(user.getListOfSubscription().get(0).getSubscriptionType());
+                    response = setDefaultSubscription(response);
                 }
                 persistCollections(user, response);
 
@@ -77,7 +75,8 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
                 throw new IllegalArgumentException("Incorrect password");
             }
         } catch (Exception e) {
-            throw new EntityNotFoundException("No user with email address \"" + email + "\" found.");
+            LOGGER.error(e);
+            throw new EntityNotFoundException("No user with email address " + email + " found.");
         }
     }
 
@@ -213,7 +212,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     }
 
     @Transactional
-    private void setDefaultSubscription(ProrataUserEntity persistedUser) {
+    private ProrataUserEntity setDefaultSubscription(ProrataUserEntity persistedUser) {
         if (persistedUser != null) {
             SubscriptionEntity subscription = new SubscriptionEntity();
             subscription.setStartDateTime(Calendar.getInstance().getTime());
@@ -232,7 +231,8 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
             List<SubscriptionEntity> subs = new ArrayList<>();
             subs.add(persistedSubscription);
             persistedUser.setListOfSubscription(subs);
-            repository.save(persistedUser);
+            return repository.save(persistedUser);
+
         } else throw new IllegalArgumentException("cannot set default subscription");
     }
 
