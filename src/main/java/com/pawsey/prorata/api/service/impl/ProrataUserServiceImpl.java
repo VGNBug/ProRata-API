@@ -10,6 +10,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import javax.security.auth.login.CredentialException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -55,14 +56,40 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
 
     @Override
     @Transactional
-    public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws CredentialException {
-        if (checkCredentials(email, password) != null) {
-            user.setProrataUserId(checkCredentials(email, password).getProrataUserId());
-            ProrataUserEntity response = super.update(user);
-            persistCollections(user, response);
-            return checkCredentials(user.getEmail(), user.getPassword());
-        } else throw new IllegalArgumentException("Entity to be updated must contain an email and password");
+    public ProrataUserEntity update(ProrataUserEntity user, String email, String password) {
+        //TODO check email and password
+        try {
+            ProrataUserEntity returnedResponse = null;
+                    
+            if (password.equals(repository.findByEmail(email).getPassword())) {
+                user.setProrataUserId(repository.findByEmail(email).getProrataUserId());
+                ProrataUserEntity response = super.update(user);
+                persistCollections(user, response);
+
+                returnedResponse = repository.findByEmail(user.getEmail());
+                initializeCollections(returnedResponse);
+                return returnedResponse;
+            } else {
+                throw new IllegalArgumentException("Incorrect password");
+            }
+        } catch (Exception e) { 
+            throw new EntityNotFoundException("No user with email address \"" + email + "\" found.");
+        }
     }
+
+//    @Override
+//    @Transactional
+//    public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws CredentialException {
+////        if (checkCredentials(email, password) != null) {
+//        if(repository.findByEmail(email) != null && password.equals(repository.findByEmail(email).getPassword())) {
+////            user.setProrataUserId(checkCredentials(email, password).getProrataUserId());
+//            user.setProrataUserId(repository.findByEmail(email).getProrataUserId());
+//            ProrataUserEntity response = super.update(user);
+//            persistCollections(user, response);
+//            return initializeCollections(response);
+////            return checkCredentials(user.getEmail(), user.getPassword());
+//        } else throw new IllegalArgumentException("Entity to be updated must contain an email and password");
+//    }
 
     @Override
     @Transactional
@@ -109,7 +136,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         super.delete(checkCredentials(email, password));
     }
 
-    //@Transactional
+    @Transactional
     private ProrataUserEntity checkCredentials(String email, String password) {
         ProrataUserEntity response = null;
 

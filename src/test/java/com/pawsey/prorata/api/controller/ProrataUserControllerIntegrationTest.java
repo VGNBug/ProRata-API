@@ -321,10 +321,14 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertNotNull(response.getProrataUserId());
         assertEquals(expected.getEmail(), response.getEmail());
         assertEquals(expected.getPassword(), response.getPassword());
-        assertEquals(makeSubscription(now).toString(), response.getListOfSubscription().get(makeSubscriptionsList(now).size() - 1).toString());
-        assertEquals(makeAccount(makeBank()).getAccountNumber().toString(), response.getListOfAccount().get(makeAccountsList().size() - 1).getAccountNumber());
-//        assertEquals(makeUserContact().toString(), response.getListOfUserContact().get(makeUserContactsList().size() -1).toString());
-        assertEquals(makeEmployment(makeEmployer(), now).getName(), response.getListOfEmployment().get(makeEmploymentsList(now).size() - 1).getName());
+        assertTrue(response.getListOfSubscription().size() > 0);
+        assertEquals(makeSubscription(now).toString(), response.getListOfSubscription().get(response.getListOfSubscription().size() - 1).toString());
+        assertTrue(response.getListOfAccount().size() > 0);
+        assertEquals(makeAccount(makeBank()).getAccountNumber().toString(), response.getListOfAccount().get(response.getListOfAccount().size() - 1).getAccountNumber());
+//        assertTrue(response.getListOfUserContact().size() > 0);
+//        assertEquals(makeUserContact().toString(), response.getListOfUserContact().get(response.getListOfUserContact().size() -1).toString());
+        assertTrue(response.getListOfEmployment().size() > 0);
+        assertEquals(makeEmployment(makeEmployer(), now).getName(), response.getListOfEmployment().get(response.getListOfEmployment().size() - 1).getName());
     }
 
     private class MalformedProrataUserEntity {
