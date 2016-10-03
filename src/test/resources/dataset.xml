@@ -10,9 +10,15 @@
         address="1 Test lane"
         postcode="TE12ST" />
     <subscription_type
-        subscription_type_id="1"
-        name="standard"
-        rate="0" />
+            subscription_type_id="1"
+            name="standard"
+            rate="0" />
+    <subscription
+        subscription_id="1"
+        start_date_time="2013-11-11 12:10:15"
+        end_date_time="2014-11-11 12:10:15"
+        prorata_user_id="1"
+        subscription_type_id="1" />
     <bank
         bank_id="1"
         name="Bank"

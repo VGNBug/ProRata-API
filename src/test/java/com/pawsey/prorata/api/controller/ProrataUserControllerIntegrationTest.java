@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
@@ -45,34 +47,37 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         newUser.setEmail("newUser@test.com");
 
         Date now = Calendar.getInstance().getTime();
-//        newUser.setListOfSubscription(makeSubscriptionsList(now));
         newUser.setListOfAccount(makeAccountsList());
 //        newUser.setListOfUserContact(makeUserContactsList());
         newUser.setListOfEmployment(makeEmploymentsList(now));
 
-        ProrataUserEntity response = requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, newUser);
+        ResponseEntity<ProrataUserEntity> response = requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, newUser);
 
-        postPutAssertions(now, response);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(now.toString(), response.getBody().getListOfSubscription().get(response.getBody().getListOfSubscription().size() - 1).getStartDateTime().toString());
+        postPutAssertions(now, response.getBody());
     }
 
     /*
     POST: Sad paths
     */
-    @Test(expected = NullPointerException.class)
+    @Test(expected = HttpClientErrorException.class)
     public void testCreate_NoDataShouldFail() {
         ProrataUserEntity nullEntity = null;
-        ProrataUserEntity response = requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, nullEntity);
+        ResponseEntity<ProrataUserEntity> response = requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, nullEntity);
 
-        assertNull(response);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
-    @Test(expected = HttpServerErrorException.class)
+    @Test(expected = HttpClientErrorException.class)
     public void testCreate_MalformattedDataShouldFail() {
         MalformedProrataUserEntity malformed = makeMalformedProrataUserEntity();
 
-        ProrataUserEntity response = this.requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, malformed);
+        ResponseEntity<ProrataUserEntity> response = this.requestPostProrataUserEntity(API_URL + CONTROLLER_PATH, malformed);
 
-        assertNull(response);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     /*
@@ -80,11 +85,12 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
      */
     @Test
     public void testRead() {
-        ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), expected.getPassword());
+        ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(expected.getEmail(), expected.getPassword());
 
-        assertNotNull(response);
-        assertEquals(response.getEmail(), expected.getEmail());
-        assertEquals(response.getPassword(), expected.getPassword());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(response.getBody().getEmail(), expected.getEmail());
+        assertEquals(response.getBody().getPassword(), expected.getPassword());
     }
 
     /*
@@ -92,21 +98,26 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
      */
     @Test(expected = HttpServerErrorException.class)
     public void testRead_FailsWithWrongEmailRightPassword() {
-        ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
+        ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
 
-        assertNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test(expected = HttpServerErrorException.class)
     public void testRead_FailsWithRightEmailWrongPassword() {
-        ProrataUserEntity response = requestGetProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
+        ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
 
-        assertNull(response);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = HttpServerErrorException.class)
     public void testRead_FailsWithWrongEmailWrongPassword() {
-        ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
+        ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     /*
@@ -122,15 +133,17 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         updatedExpetedUser.setProrataUserId(1);
 
         Date now = Calendar.getInstance().getTime();
-//        updatedExpetedUser.setListOfSubscription(makeSubscriptionsList(now));
+        updatedExpetedUser.setListOfSubscription(makeSubscriptionsList(now));
         updatedExpetedUser.setListOfAccount(makeAccountsList());
 //        updatedExpetedUser.setListOfUserContact(makeUserContactsList());
         updatedExpetedUser.setListOfEmployment(makeEmploymentsList(now));
 
         restTemplate.put(url, updatedExpetedUser);
-        ProrataUserEntity response = requestGetProrataUserEntity(updatedExpetedUser.getEmail(), updatedExpetedUser.getPassword());
+        ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(updatedExpetedUser.getEmail(), updatedExpetedUser.getPassword());
 
-        postPutAssertions(now, response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Mon Nov 11 00:00:00 GMT 2013", response.getBody().getListOfSubscription().get(response.getBody().getListOfSubscription().size() - 1).getStartDateTime().toString());
+        postPutAssertions(now, response.getBody());
     }
 
     /**
@@ -146,8 +159,9 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         String url = API_URL + CONTROLLER_PATH + "/" + expected.getEmail() + "/" + expected.getPassword();
 
         restTemplate.put(url, malformedUpdateUser);
-        ProrataUserEntity response = requestGetProrataUserEntity(malformedUpdateUser.getBadEmail(), malformedUpdateUser.getBadPassword());
+        ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(malformedUpdateUser.getBadEmail(), malformedUpdateUser.getBadPassword());
 
+        assertEquals(HttpStatus.NOT_MODIFIED, response.getStatusCode());
         assertNull(response);
     }
 
@@ -181,31 +195,22 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         makeDeleteRequest(CONTROLLER_PATH, expected.getProrataUserId());
     }
 
-    private ProrataUserEntity requestPostProrataUserEntity(String url, ProrataUserEntity entity) {
-        Map<String, String> vars = new HashMap<String, String>();
-        vars.put("prorata_user_id", "-1");
-        vars.put("email", expected.getEmail());
-        vars.put("password", entity.getPassword());
-
-        ProrataUserEntity response = restTemplate.postForObject(url, entity, ProrataUserEntity.class, vars);
+    private ResponseEntity<ProrataUserEntity> requestPostProrataUserEntity(String url, ProrataUserEntity entity) {
+        ResponseEntity response = restTemplate.postForEntity(url, entity, ProrataUserEntity.class);
         LOGGER.info("POST of a ProrataUserEntity made at " + url);
         return response;
     }
 
-    private ProrataUserEntity requestPostProrataUserEntity(String url, MalformedProrataUserEntity entity) {
-        Map<String, String> vars = new HashMap<String, String>();
-        vars.put("prorata_user_id", entity.getBadId().toString());
-        vars.put("email", entity.getBadEmail());
-        vars.put("password", entity.getBadPassword());
-
-        ProrataUserEntity response = restTemplate.postForObject(url, entity, ProrataUserEntity.class, vars);
+    private ResponseEntity<ProrataUserEntity> requestPostProrataUserEntity(String url, MalformedProrataUserEntity entity) {
+        ResponseEntity response = restTemplate.postForEntity(url, entity, ProrataUserEntity.class);
         LOGGER.info("POST of a ProrataUserEntity made at " + url);
         return response;
     }
 
-    private ProrataUserEntity requestGetProrataUserEntity(String email, String password) {
+    private ResponseEntity<ProrataUserEntity> requestGetProrataUserEntity(String email, String password) {
         final String signInUrl = API_URL + CONTROLLER_PATH + email + "/" + password;
-        ProrataUserEntity response = restTemplate.getForObject(signInUrl, ProrataUserEntity.class);
+//        ProrataUserEntity response = restTemplate.getForObject(signInUrl, ProrataUserEntity.class);
+        ResponseEntity response = restTemplate.getForEntity(signInUrl, ProrataUserEntity.class);
         LOGGER.info("GET for a ProrataUserEntity made at " + signInUrl);
         return response;
     }
@@ -322,7 +327,8 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertEquals(expected.getEmail(), response.getEmail());
         assertEquals(expected.getPassword(), response.getPassword());
         assertTrue(response.getListOfSubscription().size() > 0);
-        assertEquals("standard", response.getListOfSubscription().get(response.getListOfSubscription().size() - 1).getSubscriptionType().getName());
+//        assertEquals(now.toString(), response.getListOfSubscription().get(response.getListOfSubscription().size() - 1).getStartDateTime().toString());
+        assertNotNull(response.getListOfSubscription());
         assertTrue(response.getListOfAccount().size() > 0);
         assertEquals(makeAccount(makeBank()).getAccountNumber().toString(), response.getListOfAccount().get(response.getListOfAccount().size() - 1).getAccountNumber());
 //        assertTrue(response.getListOfUserContact().size() > 0);

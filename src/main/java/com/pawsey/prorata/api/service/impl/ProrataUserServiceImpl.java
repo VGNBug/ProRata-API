@@ -56,19 +56,32 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
 
     @Override
     @Transactional
-    public ProrataUserEntity update(ProrataUserEntity user, String email, String password) {
+    public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws Exception{
         try {
-            ProrataUserEntity returnedResponse = null;
+            ProrataUserEntity returnedResponse;
 
-            if (password.equals(repository.findByEmail(email).getPassword())) {
-                user.setProrataUserId(repository.findByEmail(email).getProrataUserId());
+            final ProrataUserEntity persisted = repository.findByEmail(email);
+
+            if (password.equals(persisted.getPassword())) {
+                if(user.getProrataUserId() == null) {
+                    user.setProrataUserId(persisted.getProrataUserId());
+                }
+                if(user.getEmail() == null) {
+                    user.setEmail(persisted.getEmail());
+                }
+                if(user.getPassword() == null) {
+                    user.setPassword(persisted.getPassword());
+                }
+
                 ProrataUserEntity response = super.update(user);
+
                 if (user.getListOfSubscription() == null) {
                     response = setDefaultSubscription(response);
                 }
+
                 persistCollections(user, response);
 
-                returnedResponse = repository.findByEmail(user.getEmail());
+                returnedResponse = repository.findByEmail(response.getEmail());
                 initializeCollections(returnedResponse);
                 return returnedResponse;
             } else {

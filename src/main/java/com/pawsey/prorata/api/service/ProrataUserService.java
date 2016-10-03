@@ -11,5 +11,5 @@ public interface ProrataUserService extends BaseService<ProrataUserEntity> {
 
     void delete(String email, String password) throws CredentialException;
 
-    ProrataUserEntity update(ProrataUserEntity entity, String email, String password) throws CredentialException;
+    ProrataUserEntity update(ProrataUserEntity entity, String email, String password) throws CredentialException, Exception;
 }
