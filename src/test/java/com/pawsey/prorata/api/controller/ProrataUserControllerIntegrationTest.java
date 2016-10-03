@@ -45,7 +45,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         newUser.setEmail("newUser@test.com");
 
         Date now = Calendar.getInstance().getTime();
-        newUser.setListOfSubscription(makeSubscriptionsList(now));
+//        newUser.setListOfSubscription(makeSubscriptionsList(now));
         newUser.setListOfAccount(makeAccountsList());
 //        newUser.setListOfUserContact(makeUserContactsList());
         newUser.setListOfEmployment(makeEmploymentsList(now));
@@ -104,7 +104,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertNull(response);
     }
 
-    @Test(expected = HttpServerErrorException.class)
+    @Test(expected = HttpClientErrorException.class)
     public void testRead_FailsWithWrongEmailWrongPassword() {
         ProrataUserEntity response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
     }
@@ -122,7 +122,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         updatedExpetedUser.setProrataUserId(1);
 
         Date now = Calendar.getInstance().getTime();
-        updatedExpetedUser.setListOfSubscription(makeSubscriptionsList(now));
+//        updatedExpetedUser.setListOfSubscription(makeSubscriptionsList(now));
         updatedExpetedUser.setListOfAccount(makeAccountsList());
 //        updatedExpetedUser.setListOfUserContact(makeUserContactsList());
         updatedExpetedUser.setListOfEmployment(makeEmploymentsList(now));
@@ -322,7 +322,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertEquals(expected.getEmail(), response.getEmail());
         assertEquals(expected.getPassword(), response.getPassword());
         assertTrue(response.getListOfSubscription().size() > 0);
-        assertEquals(makeSubscription(now).toString(), response.getListOfSubscription().get(response.getListOfSubscription().size() - 1).toString());
+        assertEquals("standard", response.getListOfSubscription().get(response.getListOfSubscription().size() - 1).getSubscriptionType().getName());
         assertTrue(response.getListOfAccount().size() > 0);
         assertEquals(makeAccount(makeBank()).getAccountNumber().toString(), response.getListOfAccount().get(response.getListOfAccount().size() - 1).getAccountNumber());
 //        assertTrue(response.getListOfUserContact().size() > 0);

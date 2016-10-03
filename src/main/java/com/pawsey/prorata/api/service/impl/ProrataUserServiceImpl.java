@@ -57,13 +57,17 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     @Override
     @Transactional
     public ProrataUserEntity update(ProrataUserEntity user, String email, String password) {
-        //TODO check email and password
         try {
             ProrataUserEntity returnedResponse = null;
-                    
+
             if (password.equals(repository.findByEmail(email).getPassword())) {
                 user.setProrataUserId(repository.findByEmail(email).getProrataUserId());
                 ProrataUserEntity response = super.update(user);
+                if (user.getListOfSubscription() == null) {
+                    setDefaultSubscription(response);
+                    Hibernate.initialize(user.getListOfSubscription());
+                    Hibernate.initialize(user.getListOfSubscription().get(0).getSubscriptionType());
+                }
                 persistCollections(user, response);
 
                 returnedResponse = repository.findByEmail(user.getEmail());
@@ -72,24 +76,10 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
             } else {
                 throw new IllegalArgumentException("Incorrect password");
             }
-        } catch (Exception e) { 
+        } catch (Exception e) {
             throw new EntityNotFoundException("No user with email address \"" + email + "\" found.");
         }
     }
-
-//    @Override
-//    @Transactional
-//    public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws CredentialException {
-////        if (checkCredentials(email, password) != null) {
-//        if(repository.findByEmail(email) != null && password.equals(repository.findByEmail(email).getPassword())) {
-////            user.setProrataUserId(checkCredentials(email, password).getProrataUserId());
-//            user.setProrataUserId(repository.findByEmail(email).getProrataUserId());
-//            ProrataUserEntity response = super.update(user);
-//            persistCollections(user, response);
-//            return initializeCollections(response);
-////            return checkCredentials(user.getEmail(), user.getPassword());
-//        } else throw new IllegalArgumentException("Entity to be updated must contain an email and password");
-//    }
 
     @Override
     @Transactional
@@ -224,23 +214,26 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
 
     @Transactional
     private void setDefaultSubscription(ProrataUserEntity persistedUser) {
-        SubscriptionEntity subscription = new SubscriptionEntity();
-        subscription.setStartDateTime(Calendar.getInstance().getTime());
-        subscription.setProrataUser(persistedUser);
-        if (subscriptionTypeJpaRepository.findByName("standard") != null) {
-            subscription.setSubscriptionType(subscriptionTypeJpaRepository.findByName("standard"));
-        } else {
-            SubscriptionTypeEntity type = new SubscriptionTypeEntity();
-            type.setRate(new BigDecimal(0));
-            type.setName("standard");
-            type = subscriptionTypeJpaRepository.save(type);
-            subscription.setSubscriptionType(type);
-        }
-        SubscriptionEntity persistedSubscription = subscriptionJpaRepository.save(subscription);
-        List<SubscriptionEntity> subs = new ArrayList<>();
-        subs.add(persistedSubscription);
-        persistedUser.setListOfSubscription(subs);
-        repository.save(persistedUser);
+        if (persistedUser != null) {
+            SubscriptionEntity subscription = new SubscriptionEntity();
+            subscription.setStartDateTime(Calendar.getInstance().getTime());
+            subscription.setProrataUser(persistedUser);
+            if (subscriptionTypeJpaRepository.findByName("standard") != null) {
+                subscription.setSubscriptionType(subscriptionTypeJpaRepository.findByName("standard"));
+            } else {
+                SubscriptionTypeEntity type = new SubscriptionTypeEntity();
+                type.setRate(new BigDecimal(0));
+                type.setName("standard");
+                type = subscriptionTypeJpaRepository.save(type);
+                subscription.setSubscriptionType(type);
+
+            }
+            SubscriptionEntity persistedSubscription = subscriptionJpaRepository.save(subscription);
+            List<SubscriptionEntity> subs = new ArrayList<>();
+            subs.add(persistedSubscription);
+            persistedUser.setListOfSubscription(subs);
+            repository.save(persistedUser);
+        } else throw new IllegalArgumentException("cannot set default subscription");
     }
 
     @Transactional
