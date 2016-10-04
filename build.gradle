@@ -29,6 +29,21 @@ repositories {
 	maven { url "https://repo.spring.io/milestone" }
 }
 
+sourceSets {
+	integrationTest {
+		java {
+			compileClasspath += main.output + test.output
+			runtimeClasspath += main.output + test.output
+			srcDir file('src/integration-test/java')
+		}
+		resources.srcDir file('src/integration-test/resources')
+	}
+}
+
+configurations {
+	integrationTestCompile.extendsFrom testCompile
+	integrationTestRuntime.extendsFrom testRuntime
+}
 
 dependencies {
 	// Local sub-projects
@@ -67,3 +82,31 @@ task copyToLib(type: Copy) {
 }
 
 stage.dependsOn(copyToLib)
+
+task(runSimple, dependsOn: 'classes', type: JavaExec) {
+	main = 'com.pawsey.prorata.api.ProRataApiApplication'
+	classpath = sourceSets.main.runtimeClasspath
+//	args 'mrhaki'
+//	systemProperty 'simple.message', 'Hello '
+}
+
+defaultTasks 'runSimple'
+
+task integrationTest(type: Test) {
+	testClassesDir = sourceSets.integrationTest.output.classesDir
+	classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+
+tasks.withType(Test) {
+	reports.html.destination = file("${reporting.baseDir}/${name}")
+}
+
+task ci(dependsOn: [
+		build,
+		runSimple,
+		test
+])
