@@ -21,25 +21,25 @@ import java.util.List;
 public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, ProrataUserRepository> implements ProrataUserService {
 
     @Autowired
-    private SubscriptionTypeRepository subscriptionTypeJpaRepository;
+    private SubscriptionTypeRepository subscriptionTypeRepository;
 
     @Autowired
-    private SubscriptionRepository subscriptionJpaRepository;
+    private SubscriptionRepository subscriptionRepository;
 
     @Autowired
-    private AccountRepository accountJpaRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    private EmploymentRepository employmentJpaRepository;
+    private EmploymentRepository employmentRepository;
 
     @Autowired
-    private EmployerRepository employerJpaRepository;
+    private EmployerRepository employerRepository;
 
     @Autowired
-    private UserContactRepository userContactJpaRepository;
+    private UserContactRepository userContactRepository;
 
     @Autowired
-    private BankRepository bankJpaRepository;
+    private BankRepository bankRepository;
 
     @Override
     @Transactional
@@ -167,9 +167,9 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
                 // TODO no need to persist the bank- this should be provided as
                 // a list in the client rather than letting users create them.
                 for (AccountEntity account : user.getListOfAccount()) {
-                    account.setBank(bankJpaRepository.findOne(1)); // TODO lulwut... why is this hard coded?!
+                    account.setBank(bankRepository.findOne(1)); // TODO lulwut... why is this hard coded?!
                     account.setProrataUser(persistedUser);
-                    accountJpaRepository.save(account);
+                    accountRepository.save(account);
                     LOGGER.info("Added the following account to user with ID " + user.getProrataUserId() + ": "
                             + account.toString());
                 }
@@ -184,12 +184,12 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
                         employer = new EmployerEntity();
                         employer.setName("Undeclared Employer");
                         employment.setEmployer(employer);
-                        employerJpaRepository.save(employer);
+                        employerRepository.save(employer);
                         LOGGER.info("Created employer for employent " + employment.toString());
                     }
 
                     employment.setProrataUser(persistedUser);
-                    employmentJpaRepository.save(employment);
+                    employmentRepository.save(employment);
                     LOGGER.info("Added the following account to user with ID " + user.getProrataUserId() + ": "
                             + employment.toString());
                 }
@@ -198,7 +198,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
                 for (SubscriptionEntity subscription : user.getListOfSubscription()) {
                     if (subscription.getSubscriptionType() != null) {
                         subscription.setProrataUser(persistedUser);
-                        subscriptionJpaRepository.save(subscription);
+                        subscriptionRepository.save(subscription);
                         LOGGER.info("Added the following subscription to user with ID " + user.getProrataUserId() + ": "
                                 + subscription.toString());
                     }
@@ -207,7 +207,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
             if (user.getListOfUserContact() != null) {
                 for (UserContactEntity userContact : user.getListOfUserContact()) {
                     userContact.setProrataUser(persistedUser);
-                    userContactJpaRepository.save(userContact);
+                    userContactRepository.save(userContact);
                     LOGGER.info("Added the following contact to user with ID " + user.getProrataUserId() + ": " + userContact.toString());
                 }
             }
@@ -230,17 +230,17 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
             SubscriptionEntity subscription = new SubscriptionEntity();
             subscription.setStartDateTime(Calendar.getInstance().getTime());
             subscription.setProrataUser(persistedUser);
-            if (subscriptionTypeJpaRepository.findByName("standard") != null) {
-                subscription.setSubscriptionType(subscriptionTypeJpaRepository.findByName("standard"));
+            if (subscriptionTypeRepository.findByName("standard") != null) {
+                subscription.setSubscriptionType(subscriptionTypeRepository.findByName("standard"));
             } else {
                 SubscriptionTypeEntity type = new SubscriptionTypeEntity();
                 type.setRate(new BigDecimal(0));
                 type.setName("standard");
-                type = subscriptionTypeJpaRepository.save(type);
+                type = subscriptionTypeRepository.save(type);
                 subscription.setSubscriptionType(type);
 
             }
-            SubscriptionEntity persistedSubscription = subscriptionJpaRepository.save(subscription);
+            SubscriptionEntity persistedSubscription = subscriptionRepository.save(subscription);
             List<SubscriptionEntity> subs = new ArrayList<>();
             subs.add(persistedSubscription);
             persistedUser.setListOfSubscription(subs);
