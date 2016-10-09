@@ -162,10 +162,9 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     private void persistCollections(ProrataUserEntity user, ProrataUserEntity persistedUser) {
         String stateMessage = null;
 
-        if (user != null && persistedUser.getProrataUserId() != null) {
+        if (user != null && persistedUser != null && persistedUser.getProrataUserId() != null) {
             if (user.getListOfAccount() != null) {
-                // TODO no need to persist the bank- this should be provided as
-                // a list in the client rather than letting users create them.
+                // TODO no need to persist the bank- this should be provided as  a list in the client rather than letting users create them.
                 for (AccountEntity account : user.getListOfAccount()) {
                     account.setBank(bankRepository.findOne(1)); // TODO lulwut... why is this hard coded?!
                     account.setProrataUser(persistedUser);
@@ -211,7 +210,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
                     LOGGER.info("Added the following contact to user with ID " + user.getProrataUserId() + ": " + userContact.toString());
                 }
             }
-        } else if (persistedUser.getProrataUserId() == null) {
+        } else if (persistedUser == null || persistedUser.getProrataUserId() == null) {
             stateMessage = "Persistence of AccountEntities failed: Suppled perisisted ProrataUserEntity ID must not be null.";
             IllegalArgumentException e = new IllegalArgumentException(stateMessage);
             LOGGER.error(e);
