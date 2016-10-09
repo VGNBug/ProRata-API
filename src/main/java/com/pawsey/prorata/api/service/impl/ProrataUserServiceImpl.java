@@ -244,8 +244,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
             List<SubscriptionEntity> subs = new ArrayList<>();
             subs.add(persistedSubscription);
             persistedUser.setListOfSubscription(subs);
-            return repository.save(persistedUser);
-
+            return persistedUser;
         } else throw new IllegalArgumentException("cannot set default subscription");
     }
 
