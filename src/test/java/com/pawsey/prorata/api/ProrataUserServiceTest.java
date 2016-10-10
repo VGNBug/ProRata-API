@@ -64,9 +64,6 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         setEntities();
         setRepositories();
         setService();
-
-        // TODO implement tests of novel service methods
-
         super.setup();
     }
 
@@ -97,7 +94,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         verify(subscriptionRepository).save(any(SubscriptionEntity.class));
     }
 
-    @Test(expected = ProrataUserNotFoundException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testCreateWithoutEmailShouldFail() throws Exception {
         ProrataUserEntity failEntity = Mockito.mock(ProrataUserEntity.class);
         when(failEntity.getPassword()).thenReturn(password);
@@ -107,7 +104,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         assertNull(service.create(failEntity));
     }
 
-    @Test(expected = ProrataUserNotFoundException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testCreateWithoutPasswordShouldFail() throws Exception {
         ProrataUserEntity failEntity = Mockito.mock(ProrataUserEntity.class);
         when(failEntity.getEmail()).thenReturn(email);
@@ -235,24 +232,40 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         runTestDelete();
     }
 
-    @Test(expected = ProrataUserNotFoundException.class)
-    public void testDeleteNoEmailShouldFail() {
-        fail("Not yet implemented");
+    @Test
+    public void testDeleteSubclassImplementation() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        service.delete(email, password);
+        verify(repository).delete(entity);
     }
 
     @Test(expected = ProrataUserNotFoundException.class)
-    public void testDeleteWrongEmailShouldFail(){
-        fail("Not yet implemented");
+    public void testDeleteNoEmailShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        service.delete(null, password);
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testDeleteWrongEmailShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        service.delete(BAD_EMAIL, password);
     }
 
     @Test(expected = IncorrectPasswordException.class)
-    public void testDeleteNoPasswordShouldFail() {
-        fail("Not yet implemented");
+    public void testDeleteNoPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        service.delete(email, null);
     }
 
     @Test(expected = IncorrectPasswordException.class)
-    public void testDeleteWrongPasswordShouldFail() {
-        fail("Not yet implemented");
+    public void testDeleteWrongPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        service.delete(email, BAD_PASSWORD);
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testDeleteWrongEmailWrongPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        service.delete(BAD_EMAIL, BAD_PASSWORD);
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testDeleteNoEmailNoPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        service.delete(null, null);
     }
 
     @Override
