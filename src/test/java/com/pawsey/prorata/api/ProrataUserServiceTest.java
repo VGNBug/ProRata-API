@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -97,9 +98,19 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     @Test(expected = ProrataUserNotFoundException.class)
     public void testCreateWithoutEmailShouldFail() throws Exception {
         ProrataUserEntity failEntity = Mockito.mock(ProrataUserEntity.class);
-        failEntity.setPassword(password);
-        failEntity.setFirstName(firstName);
-        failEntity.setLastName(lastName);
+        when(failEntity.getPassword()).thenReturn(password);
+        when(failEntity.getFirstName()).thenReturn(firstName);
+        when(failEntity.getLastName()).thenReturn(lastName);
+
+        assertNull(service.create(failEntity));
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testCreateWithoutPasswordShouldFail() throws Exception {
+        ProrataUserEntity failEntity = Mockito.mock(ProrataUserEntity.class);
+        when(failEntity.getEmail()).thenReturn(email);
+        when(failEntity.getFirstName()).thenReturn(firstName);
+        when(failEntity.getLastName()).thenReturn(lastName);
 
         assertNull(service.create(failEntity));
     }
@@ -125,9 +136,19 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         assertNull(service.signIn(null, entity.getPassword()));
     }
 
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testSignInWrongEmailShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        assertNull(service.signIn("bad-email@test.com", entity.getPassword()));
+    }
+
     @Test(expected = IncorrectPasswordException.class)
     public void testSignInNoPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
         assertNull(service.signIn(entity.getEmail(), null));
+    }
+
+    @Test(expected = IncorrectPasswordException.class)
+    public void testSignInWrongPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        assertNull(service.signIn(entity.getEmail(), "badPassword"));
     }
 
     @Override
@@ -136,10 +157,50 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         checkEntityAssertions(runTestUpdate(entity));
     }
 
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testUpdateNoEmailShouldFail() {
+        fail("Not yet implemented");
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testUpdateWrongEmailShouldFail(){
+        fail("Not yet implemented");
+    }
+
+    @Test(expected = IncorrectPasswordException.class)
+    public void testUpdateNoPasswordShouldFail() {
+        fail("Not yet implemented");
+    }
+
+    @Test(expected = IncorrectPasswordException.class)
+    public void testUpdateWrongPasswordShouldFail() {
+        fail("Not yet implemented");
+    }
+
     @Override
     @Test
     public void testDelete() {
         runTestDelete();
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testDeleteNoEmailShouldFail() {
+        fail("Not yet implemented");
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testDeleteWrongEmailShouldFail(){
+        fail("Not yet implemented");
+    }
+
+    @Test(expected = IncorrectPasswordException.class)
+    public void testDeleteNoPasswordShouldFail() {
+        fail("Not yet implemented");
+    }
+
+    @Test(expected = IncorrectPasswordException.class)
+    public void testDeleteWrongPasswordShouldFail() {
+        fail("Not yet implemented");
     }
 
     @Override
@@ -199,7 +260,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     protected void setRepositories() {
         repository = Mockito.mock(ProrataUserRepository.class);
         when(repository.save(any(ProrataUserEntity.class))).thenReturn(entity);
-        when(repository.findByEmail(anyString())).thenReturn(entity);
+        when(repository.findByEmail(email)).thenReturn(entity);
 
         subscriptionTypeEntityList.add(subscriptionTypeEntity);
         when(subscriptionTypeRepository.save(any(SubscriptionTypeEntity.class))).thenReturn(subscriptionTypeEntity);

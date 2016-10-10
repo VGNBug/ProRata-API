@@ -44,7 +44,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     @Override
     @Transactional
     public ProrataUserEntity create(ProrataUserEntity user) throws Exception {
-        if(!"".equals(user.getEmail()) && user.getEmail() != null) {
+        if (!"".equals(user.getEmail()) && user.getEmail() != null) {
             ProrataUserEntity persistedUser = super.create(user);
             persistCollections(user, persistedUser);
 
@@ -64,7 +64,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
 
     @Override
     @Transactional
-    public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws Exception{
+    public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws Exception {
         LOGGER.info("Making request to update " + user.getClass().getSimpleName() + " with email \"" + email + "\" and password \"" + password);
         try {
             ProrataUserEntity returnedResponse;
@@ -72,13 +72,13 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
             final ProrataUserEntity persisted = repository.findByEmail(email);
 
             if (password.equals(persisted.getPassword())) {
-                if(user.getProrataUserId() == null) {
+                if (user.getProrataUserId() == null) {
                     user.setProrataUserId(persisted.getProrataUserId());
                 }
-                if(user.getEmail() == null) {
+                if (user.getEmail() == null) {
                     user.setEmail(persisted.getEmail());
                 }
-                if(user.getPassword() == null) {
+                if (user.getPassword() == null) {
                     user.setPassword(persisted.getPassword());
                 }
 
@@ -124,17 +124,21 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         if (email != null && !"".equals(email) && password != null) {
             try {
                 matchByEmail = repository.findByEmail(email);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 LOGGER.error("Unable to find user by email due to an unknown error.");
                 throw new ProrataUserNotFoundException("We're sorry, there was an error. If the error persists, please let us know.");
             }
-
-            if(password.equals(matchByEmail.getPassword())) {
-                return matchByEmail;
+            if (matchByEmail != null) {
+                if (password.equals(matchByEmail.getPassword())) {
+                    return matchByEmail;
+                } else {
+                    String errorMessage = "Incorrect password.";
+                    LOGGER.error("User provided an " + errorMessage);
+                    throw new IncorrectPasswordException(errorMessage);
+                }
             } else {
-                String errorMessage = "Incorrect password.";
-                LOGGER.error("User provided an " + errorMessage);
-                throw new IncorrectPasswordException(errorMessage);
+                LOGGER.error("Unable to find a ProrataUserEntity with email \"" + email + "\"");
+                throw new ProrataUserNotFoundException("Incorrect email address");
             }
         } else if (email == null || "".equals(email)) {
             LOGGER.error("Unable to find a ProrataUserEntity with email \"" + email + "\"");
