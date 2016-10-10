@@ -32,6 +32,8 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     private final String password = "password";
     private final String firstName = "Bob";
     private final String lastName = "Alison";
+    private final String BAD_EMAIL = "bad-email@test.com";
+    private final String BAD_PASSWORD = "badPassword";
 
     private SubscriptionTypeRepository subscriptionTypeRepository = Mockito.mock(SubscriptionTypeRepository.class);
     private SubscriptionRepository subscriptionRepository = Mockito.mock(SubscriptionRepository.class);
@@ -138,7 +140,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
 
     @Test(expected = ProrataUserNotFoundException.class)
     public void testSignInWrongEmailShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
-        assertNull(service.signIn("bad-email@test.com", entity.getPassword()));
+        assertNull(service.signIn(BAD_EMAIL, entity.getPassword()));
     }
 
     @Test(expected = IncorrectPasswordException.class)
@@ -148,7 +150,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
 
     @Test(expected = IncorrectPasswordException.class)
     public void testSignInWrongPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
-        assertNull(service.signIn(entity.getEmail(), "badPassword"));
+        assertNull(service.signIn(entity.getEmail(), BAD_PASSWORD));
     }
 
     @Override
@@ -157,24 +159,74 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         checkEntityAssertions(runTestUpdate(entity));
     }
 
-    @Test(expected = ProrataUserNotFoundException.class)
-    public void testUpdateNoEmailShouldFail() {
-        fail("Not yet implemented");
+    @Test
+    public void testSubclassUpdate() throws Exception {
+        checkEntityAssertions(service.update(entity, email, password));
     }
 
     @Test(expected = ProrataUserNotFoundException.class)
-    public void testUpdateWrongEmailShouldFail(){
-        fail("Not yet implemented");
+    public void testUpdateNoEmailShouldFail() throws Exception {
+        assertNull(service.update(entity, null, password));
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testUpdateWrongEmailShouldFail() throws Exception {
+        assertNull(service.update(entity, BAD_EMAIL, password));
     }
 
     @Test(expected = IncorrectPasswordException.class)
-    public void testUpdateNoPasswordShouldFail() {
-        fail("Not yet implemented");
+    public void testUpdateNoPasswordShouldFail() throws Exception {
+        assertNull(service.update(entity, email, null));
     }
 
     @Test(expected = IncorrectPasswordException.class)
-    public void testUpdateWrongPasswordShouldFail() {
-        fail("Not yet implemented");
+    public void testUpdateWrongPasswordShouldFail() throws Exception {
+        assertNull(service.update(entity, email, BAD_PASSWORD));
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testUpdateNoEmailNoPasswordShouldFail() throws Exception {
+        assertNull(service.update(entity, null, null));
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testUpdateWrongEmailWrongPasswordShouldFail() throws Exception {
+        assertNull(service.update(entity, BAD_EMAIL, BAD_PASSWORD));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateNoUpdateEntityShouldFail() throws Exception {
+        assertNull(service.update(null, email, password));
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testUpdateNoUpdateEntityNoEmailShouldFail() throws Exception {
+        assertNull(service.update(null, null, password));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateNoUpdateEntityWrongEmailShouldFail() throws Exception {
+        assertNull(service.update(null, BAD_EMAIL, password));
+    }
+
+    @Test(expected = IncorrectPasswordException.class)
+    public void testUpdateNoUpdateEntityNoPasswordShouldFail() throws Exception {
+        assertNull(service.update(null, email, null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateNoUpdateEntityWrongPasswordShouldFail() throws Exception {
+        assertNull(service.update(null, email, BAD_PASSWORD));
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testUpdateNoUpdateEntityNoEmalNoPasswordShouldFail() throws Exception {
+        assertNull(service.update(null, null, null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateNoUpdateEntityWrongEmalWrongPasswordShouldFail() throws Exception {
+        assertNull(service.update(null, BAD_EMAIL, BAD_PASSWORD));
     }
 
     @Override

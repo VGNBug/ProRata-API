@@ -65,40 +65,61 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     @Override
     @Transactional
     public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws Exception {
-        LOGGER.info("Making request to update " + user.getClass().getSimpleName() + " with email \"" + email + "\" and password \"" + password);
+
+        if (email == null || "".equals(email)) {
+            LOGGER.error("Attempt made to update user without providing original email address");
+            throw new ProrataUserNotFoundException("Please provide your current email address.");
+        }
+        if (password == null) {
+            LOGGER.error("Attempt made to update user without providing original password");
+            throw new IncorrectPasswordException("Please provide your current password.");
+        }
+        if (user == null) {
+            LOGGER.error("ProrataUserEntity update details were null");
+            throw new IllegalArgumentException("Please provide details of the changes you'd like to make");
+        }
+
+        LOGGER.info("Making request to update ProrataUserEntity with email \"" + email + "\" and password \"" + password);
+        ProrataUserEntity returnedResponse;
+
+        ProrataUserEntity persisted;
+
         try {
-            ProrataUserEntity returnedResponse;
+            persisted = repository.findByEmail(email);
 
-            final ProrataUserEntity persisted = repository.findByEmail(email);
-
-            if (password.equals(persisted.getPassword())) {
-                if (user.getProrataUserId() == null) {
-                    user.setProrataUserId(persisted.getProrataUserId());
-                }
-                if (user.getEmail() == null) {
-                    user.setEmail(persisted.getEmail());
-                }
-                if (user.getPassword() == null) {
-                    user.setPassword(persisted.getPassword());
-                }
-
-                ProrataUserEntity response = super.update(user);
-
-                if (user.getListOfSubscription() == null) {
-                    response = setDefaultSubscription(response);
-                }
-
-                persistCollections(user, response);
-
-                returnedResponse = repository.findByEmail(response.getEmail());
-                initializeCollections(returnedResponse);
-                return returnedResponse;
-            } else {
-                throw new IllegalArgumentException("Incorrect password");
+            if(persisted == null) {
+                LOGGER.error("Unable to find user by email due to an unknown error.");
+                throw new ProrataUserNotFoundException("We're sorry, there was an error. If the error persists, please let us know.");
             }
         } catch (Exception e) {
-            LOGGER.error(e);
-            throw new EntityNotFoundException("No user with email address " + email + " found.");
+            LOGGER.error("Unable to find user by email due to an unknown error.");
+            throw new ProrataUserNotFoundException("We're sorry, there was an error. If the error persists, please let us know.");
+        }
+
+        if (password.equals(persisted.getPassword())) {
+            if (user.getProrataUserId() == null) {
+                user.setProrataUserId(persisted.getProrataUserId());
+            }
+            if (user.getEmail() == null) {
+                user.setEmail(persisted.getEmail());
+            }
+            if (user.getPassword() == null) {
+                user.setPassword(persisted.getPassword());
+            }
+
+            ProrataUserEntity response = super.update(user);
+
+            if (user.getListOfSubscription() == null) {
+                response = setDefaultSubscription(response);
+            }
+
+            persistCollections(user, response);
+
+            returnedResponse = repository.findByEmail(response.getEmail());
+            initializeCollections(returnedResponse);
+            return returnedResponse;
+        } else {
+            throw new IncorrectPasswordException("Incorrect password");
         }
     }
 
