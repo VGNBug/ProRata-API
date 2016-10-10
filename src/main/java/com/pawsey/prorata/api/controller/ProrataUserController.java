@@ -1,6 +1,8 @@
 package com.pawsey.prorata.api.controller;
 
 import com.pawsey.api.rest.controller.BaseRestController;
+import com.pawsey.prorata.api.exception.IncorrectPasswordException;
+import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.service.ProrataUserService;
 import com.pawsey.prorata.model.ProrataUserEntity;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
      */
     @Override
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity create(final @RequestBody Map<String, Object> newUser){
+    public ResponseEntity create(final @RequestBody Map<String, Object> newUser) {
         return super.create(newUser);
     }
 
@@ -48,30 +50,33 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     @RequestMapping(value = "/{email}/{password}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity read(@PathVariable String email,
-                               @PathVariable String password)  {
+                               @PathVariable String password) {
         try {
             return new ResponseEntity<>(service.signIn(email, password), null, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
+        } catch (ProrataUserNotFoundException e) {
             return getJsonFormatExceptionMessage(e, HttpStatus.NOT_FOUND);
-        } catch (CredentialException e) {
+        } catch (IncorrectPasswordException e) {
             return getJsonFormatExceptionMessage(e, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     /**
      * Updates an existing {@link com.pawsey.prorata.model.ProrataUserEntity}.
      *
-     * @param email The email address of the user to be updated, which is used to find the entity in the database.
-     * @param password The password of the user to be updated, which must match for the update to be allowed.
+     * @param email      The email address of the user to be updated, which is used to find the entity in the database.
+     * @param password   The password of the user to be updated, which must match for the update to be allowed.
      * @param updateUser A map of how the user's data will appear once updated.
      * @return The updated {@link com.pawsey.prorata.model.ProrataUserEntity}.
      */
     @RequestMapping(value = "{email}/{password}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public @ResponseBody ResponseEntity<String> update(@PathVariable String email,
-                                 @PathVariable String password,
-                                 final @RequestBody Map<String, Object> updateUser) {
-        try{
+    public
+    @ResponseBody
+    ResponseEntity<String> update(@PathVariable String email,
+                                  @PathVariable String password,
+                                  final @RequestBody Map<String, Object> updateUser) {
+        try {
             return new ResponseEntity(service.update(mapper.convertValue(updateUser, ProrataUserEntity.class), email, password), null, HttpStatus.OK);
         } catch (Exception e) {
             return getJsonFormatExceptionMessage(e, HttpStatus.NOT_MODIFIED);
@@ -88,7 +93,7 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     @RequestMapping(value = "/{email}/{password}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<String> delete(@PathVariable String email,
-                                         @PathVariable String password){
+                                         @PathVariable String password) {
         try {
             service.delete(email, password);
             return new ResponseEntity<>(getJsonFormatString("User with email address \"" + email + "\" deleted."), null, HttpStatus.NOT_FOUND);

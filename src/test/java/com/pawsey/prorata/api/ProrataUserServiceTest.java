@@ -1,6 +1,8 @@
 package com.pawsey.prorata.api;
 
 import com.pawsey.api.service.BaseServiceTest;
+import com.pawsey.prorata.api.exception.IncorrectPasswordException;
+import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.repository.*;
 import com.pawsey.prorata.api.service.ProrataUserService;
 import com.pawsey.prorata.api.service.impl.ProrataUserServiceImpl;
@@ -11,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.security.auth.login.CredentialException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,7 +69,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
 
     @Override
     @Test
-    public void testCreate() {
+    public void testCreate() throws Exception {
         checkEntityAssertions(runTestCreate(entity));
         verify(repository).save(entity);
         verify(subscriptionRepository).save(subscriptionEntity);
@@ -75,7 +78,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     }
 
     @Test
-    public void testCreateWithoutSubscriptionCreatesSubscription() {
+    public void testCreateWithoutSubscriptionCreatesSubscription() throws Exception {
         ProrataUserEntity prorataUserEntity = Mockito.mock(ProrataUserEntity.class);
         when(prorataUserEntity.getEmail()).thenReturn(email);
         when(prorataUserEntity.getPassword()).thenReturn(password);
@@ -91,15 +94,14 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         verify(subscriptionRepository).save(any(SubscriptionEntity.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateWithoutEmailShouldFail(){
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testCreateWithoutEmailShouldFail() throws Exception {
         ProrataUserEntity failEntity = Mockito.mock(ProrataUserEntity.class);
         failEntity.setPassword(password);
         failEntity.setFirstName(firstName);
         failEntity.setLastName(lastName);
 
-        ProrataUserEntity response = service.create(failEntity);
-        assertNull(response);
+        assertNull(service.create(failEntity));
     }
 
     @Override
@@ -111,6 +113,21 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     @Test
     public void testFindAll() {
         checkEntityAssertions(runTestFindAll().get(0));
+    }
+
+    @Test
+    public void testSignIn() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        checkEntityAssertions(service.signIn(entity.getEmail(), entity.getPassword()));
+    }
+
+    @Test(expected = ProrataUserNotFoundException.class)
+    public void testSignInNoEmailShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        assertNull(service.signIn(null, entity.getPassword()));
+    }
+
+    @Test(expected = IncorrectPasswordException.class)
+    public void testSignInNoPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
+        assertNull(service.signIn(entity.getEmail(), null));
     }
 
     @Override

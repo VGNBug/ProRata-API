@@ -1,17 +1,17 @@
 package com.pawsey.prorata.api.service.impl;
 
 import com.pawsey.api.service.impl.BaseServiceImpl;
+import com.pawsey.prorata.api.exception.IncorrectPasswordException;
+import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.repository.*;
 import com.pawsey.prorata.api.service.ProrataUserService;
 import com.pawsey.prorata.model.*;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.security.auth.login.CredentialException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,7 +43,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
 
     @Override
     @Transactional
-    public ProrataUserEntity create(ProrataUserEntity user) {
+    public ProrataUserEntity create(ProrataUserEntity user) throws Exception {
         if(!"".equals(user.getEmail()) && user.getEmail() != null) {
             ProrataUserEntity persistedUser = super.create(user);
             persistCollections(user, persistedUser);
@@ -52,15 +52,20 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
                 persistedUser = setDefaultSubscription(persistedUser);
             }
 
-            return checkCredentials(persistedUser.getEmail(), persistedUser.getPassword());
+            try {
+                return checkCredentials(persistedUser.getEmail(), persistedUser.getPassword());
+            } catch (ProrataUserNotFoundException | IncorrectPasswordException e) {
+                throw new ProrataUserNotFoundException("User creation failed.");
+            }
         } else {
-            throw new IllegalArgumentException("User must have an email address to be created");
+            throw new ProrataUserNotFoundException("User must have an email address to be created");
         }
     }
 
     @Override
     @Transactional
     public ProrataUserEntity update(ProrataUserEntity user, String email, String password) throws Exception{
+        LOGGER.info("Making request to update " + user.getClass().getSimpleName() + " with email \"" + email + "\" and password \"" + password);
         try {
             ProrataUserEntity returnedResponse;
 
@@ -99,67 +104,45 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
 
     @Override
     @Transactional
-    public ProrataUserEntity signIn(String email, String password) throws CredentialException {
-        String stateMessage = null;
-        ProrataUserEntity response;
-        if (email != null && password != null) {
-            // Get the user
-            response = checkCredentials(email, password);
-
-            // Check that the user returned is not null, and report on it.
-            if (response != null) {
-                stateMessage = "User with the following details was recovered by " + this.getClass().getSimpleName()
-                        + ": " + response.toString();
-                LOGGER.info(stateMessage);
-            } else {
-                stateMessage = "Sign in attempt failed because the user supplied incorrect credentials: " + getUserForErrorLogging(email, password);
-                CredentialException e = new CredentialException(stateMessage);
-                LOGGER.error(e);
-                throw e;
-            }
-        } else if (email != null && password == null) {
-            stateMessage = "Read user failed: password cannot be null.";
-            IllegalArgumentException e = new IllegalArgumentException(stateMessage);
-            LOGGER.error(e);
-            throw e;
-        } else if (email == null && password != null) {
-            stateMessage = "Read user failed: email cannot be null.";
-            IllegalArgumentException e = new IllegalArgumentException(stateMessage);
-            LOGGER.error(e);
-            throw e;
-        } else {
-            stateMessage = "Read user failed: email and password must be provided.";
-            IllegalArgumentException e = new IllegalArgumentException(stateMessage);
-            LOGGER.error(e);
-            throw e;
-        }
-        return response;
+    public ProrataUserEntity signIn(String email, String password) throws ProrataUserNotFoundException, IncorrectPasswordException {
+        LOGGER.info("Making request for ProrataUserEntity with email \"" + email + "\" and password \"" + password + "\"");
+        return checkCredentials(email, password);
     }
 
     @Override
     @Transactional
-    public void delete(String email, String password) {
+    public void delete(String email, String password) throws ProrataUserNotFoundException, IncorrectPasswordException {
+        LOGGER.info("Attempting to delete ProrataUserEntity with email \"" + email + "\" and password \"" + password + "\"");
         super.delete(checkCredentials(email, password));
     }
 
     @Transactional
-    private ProrataUserEntity checkCredentials(String email, String password) {
-        ProrataUserEntity response = null;
+    private ProrataUserEntity checkCredentials(String email, String password) throws ProrataUserNotFoundException, IncorrectPasswordException {
 
-        if (email != null && password != null) {
-            ProrataUserEntity matchByEmail = this.repository.findByEmail(email);
+        ProrataUserEntity matchByEmail = null;
 
-            if (matchByEmail != null && password.equals(matchByEmail.getPassword())) {
-                response = this.initializeCollections(matchByEmail);
-            } else {
-                String stateMessage = "User with email " + email + " was not found.";
-                DataRetrievalFailureException e = new DataRetrievalFailureException(stateMessage);
-                LOGGER.error(e);
-                throw e;
+        if (email != null && !"".equals(email) && password != null) {
+            try {
+                matchByEmail = repository.findByEmail(email);
+            } catch(Exception e) {
+                LOGGER.error("Unable to find user by email due to an unknown error.");
+                throw new ProrataUserNotFoundException("We're sorry, there was an error. If the error persists, please let us know.");
             }
-        }
 
-        return response;
+            if(password.equals(matchByEmail.getPassword())) {
+                return matchByEmail;
+            } else {
+                String errorMessage = "Incorrect password.";
+                LOGGER.error("User provided an " + errorMessage);
+                throw new IncorrectPasswordException(errorMessage);
+            }
+        } else if (email == null || "".equals(email)) {
+            LOGGER.error("Unable to find a ProrataUserEntity with email \"" + email + "\"");
+            throw new ProrataUserNotFoundException("Incorrect email address");
+        } else {
+            LOGGER.error("Password provided was null.");
+            throw new IncorrectPasswordException("You must provide a password.");
+        }
     }
 
     @Transactional
