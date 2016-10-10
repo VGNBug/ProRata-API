@@ -28,20 +28,27 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     private final String lastName = "Alison";
 
     private SubscriptionTypeRepository subscriptionTypeRepository = Mockito.mock(SubscriptionTypeRepository.class);
-    private SubscriptionRepository subscriptionRepository =Mockito.mock(SubscriptionRepository.class);
+    private SubscriptionRepository subscriptionRepository = Mockito.mock(SubscriptionRepository.class);
     private AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
     private EmploymentRepository employmentRepository = Mockito.mock(EmploymentRepository.class);
     private EmployerRepository employerRepository = Mockito.mock(EmployerRepository.class);
     private UserContactRepository userContactRepository = Mockito.mock(UserContactRepository.class);
 
     private BankRepository bankRepository = Mockito.mock(BankRepository.class);
-    private final SubscriptionTypeEntity subscriptionTypeEntity = Mockito.mock( SubscriptionTypeEntity.class);
-    private final SubscriptionEntity subscriptionEntity = Mockito.mock( SubscriptionEntity.class);
-    private final BankEntity bankEntity = Mockito.mock( BankEntity.class);
-    private final AccountEntity accountEntity = Mockito.mock( AccountEntity.class);
-    private final EmployerEntity employerEntity = Mockito.mock( EmployerEntity.class);
-    private final EmploymentEntity employmentEntity = Mockito.mock( EmploymentEntity.class);
-    private final UserContactEntity userContactEntity = Mockito.mock( UserContactEntity.class);
+    private final SubscriptionTypeEntity subscriptionTypeEntity = Mockito.mock(SubscriptionTypeEntity.class);
+    private final SubscriptionEntity subscriptionEntity = Mockito.mock(SubscriptionEntity.class);
+    private final BankEntity bankEntity = Mockito.mock(BankEntity.class);
+    private final AccountEntity accountEntity = Mockito.mock(AccountEntity.class);
+    private final EmployerEntity employerEntity = Mockito.mock(EmployerEntity.class);
+    private final EmploymentEntity employmentEntity = Mockito.mock(EmploymentEntity.class);
+    private final UserContactEntity userContactEntity = Mockito.mock(UserContactEntity.class);
+    private final List<SubscriptionTypeEntity> subscriptionTypeEntityList = new ArrayList<>();
+    private final List<SubscriptionEntity> subscriptionEntityList = new ArrayList<>();
+    private final List<BankEntity> bankEntityList = new ArrayList<>();
+    private final List<AccountEntity> accountEntityList = new ArrayList<>();
+    private final List<EmployerEntity> employerEntityList = new ArrayList<>();
+    private final List<EmploymentEntity> employmentEntityList = new ArrayList<>();
+    private final List<UserContactEntity> userContactEntityList = new ArrayList<>();
 
     @Override
     @Before
@@ -59,13 +66,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     @Test
     public void testCreate() {
         checkEntityAssertions(runTestCreate(entity));
-        verify(subscriptionTypeRepository).save(subscriptionTypeEntity);
-        verify(subscriptionRepository).save(subscriptionEntity);
-        verify(accountRepository ).save(accountEntity);
-        verify(employmentRepository ).save(employmentEntity);
-        verify(employerRepository ).save(employerEntity);
-        verify(userContactRepository ).save(userContactEntity);
-        verify(bankRepository ).save(bankEntity);
+        verify(repository).save(entity);
     }
 
     @Override
@@ -99,6 +100,10 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         when(entity.getPassword()).thenReturn(password);
         when(entity.getFirstName()).thenReturn(firstName);
         when(entity.getLastName()).thenReturn(lastName);
+        when(entity.getListOfAccount()).thenReturn(accountEntityList);
+        when(entity.getListOfEmployment()).thenReturn(employmentEntityList);
+        when(entity.getListOfSubscription()).thenReturn(subscriptionEntityList);
+        when(entity.getListOfUserContact()).thenReturn(userContactEntityList);
 
         when(subscriptionTypeEntity.getName()).thenReturn("standard");
         when(subscriptionTypeEntity.getRate()).thenReturn(new BigDecimal(0));
@@ -146,43 +151,36 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         when(repository.save(any(ProrataUserEntity.class))).thenReturn(entity);
         when(repository.findByEmail(anyString())).thenReturn(entity);
 
-        List<SubscriptionTypeEntity> subscriptionTypeEntityList = new ArrayList<>();
         subscriptionTypeEntityList.add(subscriptionTypeEntity);
         when(subscriptionTypeRepository.save(any(SubscriptionTypeEntity.class))).thenReturn(subscriptionTypeEntity);
         when(subscriptionTypeRepository.findOne(anyInt())).thenReturn(subscriptionTypeEntity);
         when(subscriptionTypeRepository.findAll()).thenReturn(subscriptionTypeEntityList);
         when(subscriptionTypeRepository.findByName(anyString())).thenReturn(subscriptionTypeEntity);
 
-        List<SubscriptionEntity> subscriptionEntityList = new ArrayList<>();
         subscriptionEntityList.add(subscriptionEntity);
         when(subscriptionRepository.save(any(SubscriptionEntity.class))).thenReturn(subscriptionEntity);
         when(subscriptionRepository.findOne(anyInt())).thenReturn(subscriptionEntity);
         when(subscriptionRepository.findAll()).thenReturn(subscriptionEntityList);
 
-        List<BankEntity> bankEntityList = new ArrayList<>();
         bankEntityList.add(bankEntity);
         when(bankRepository.save(any(BankEntity.class))).thenReturn(bankEntity);
         when(bankRepository.findOne(anyInt())).thenReturn(bankEntity);
         when(bankRepository.findAll()).thenReturn(bankEntityList);
 
-        List<AccountEntity> accountEntityList = new ArrayList<>();
         when(accountRepository.save(any(AccountEntity.class))).thenReturn(accountEntity);
         when(accountRepository.findOne(anyInt())).thenReturn(accountEntity);
         when(accountRepository.findAll()).thenReturn(accountEntityList);
 
-        List<EmployerEntity> employerEntityList = new ArrayList<>();
         employerEntityList.add(employerEntity);
         when(employerRepository.save(any(EmployerEntity.class))).thenReturn(employerEntity);
         when(employerRepository.findOne(anyInt())).thenReturn(employerEntity);
         when(employerRepository.findAll()).thenReturn(employerEntityList);
 
-        List<EmploymentEntity> employmentEntityList = new ArrayList<>();
         employmentEntityList.add(employmentEntity);
         when(employmentRepository.save(any(EmploymentEntity.class))).thenReturn(employmentEntity);
         when(employmentRepository.findOne(anyInt())).thenReturn(employmentEntity);
         when(employmentRepository.findAll()).thenReturn(employmentEntityList);
 
-        List<UserContactEntity> userContactEntityList = new ArrayList<>();
         userContactEntityList.add(userContactEntity);
         when(userContactRepository.save(any(UserContactEntity.class))).thenReturn(userContactEntity);
         when(userContactRepository.findOne(anyInt())).thenReturn(userContactEntity);
