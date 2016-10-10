@@ -7,6 +7,7 @@ import com.pawsey.prorata.api.service.impl.ProrataUserServiceImpl;
 import com.pawsey.prorata.model.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -16,6 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,6 +69,37 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     public void testCreate() {
         checkEntityAssertions(runTestCreate(entity));
         verify(repository).save(entity);
+        verify(subscriptionRepository).save(subscriptionEntity);
+        verify(employmentRepository).save(employmentEntity);
+        verify(accountRepository).save(accountEntity);
+    }
+
+    @Test
+    public void testCreateWithoutSubscriptionCreatesSubscription() {
+        ProrataUserEntity prorataUserEntity = Mockito.mock(ProrataUserEntity.class);
+        when(prorataUserEntity.getEmail()).thenReturn(email);
+        when(prorataUserEntity.getPassword()).thenReturn(password);
+        when(prorataUserEntity.getFirstName()).thenReturn(firstName);
+        when(prorataUserEntity.getLastName()).thenReturn(lastName);
+
+        when(prorataUserEntity.getListOfEmployment()).thenReturn(employmentEntityList);
+        when(prorataUserEntity.getListOfUserContact()).thenReturn(userContactEntityList);
+        when(prorataUserEntity.getListOfAccount()).thenReturn(accountEntityList);
+
+        checkEntityAssertions(runTestCreate(prorataUserEntity));
+        verify(repository).save(prorataUserEntity);
+        verify(subscriptionRepository).save(any(SubscriptionEntity.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateWithoutEmailShouldFail(){
+        ProrataUserEntity failEntity = Mockito.mock(ProrataUserEntity.class);
+        failEntity.setPassword(password);
+        failEntity.setFirstName(firstName);
+        failEntity.setLastName(lastName);
+
+        ProrataUserEntity response = service.create(failEntity);
+        assertNull(response);
     }
 
     @Override
@@ -167,6 +200,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         when(bankRepository.findOne(anyInt())).thenReturn(bankEntity);
         when(bankRepository.findAll()).thenReturn(bankEntityList);
 
+        accountEntityList.add(accountEntity);
         when(accountRepository.save(any(AccountEntity.class))).thenReturn(accountEntity);
         when(accountRepository.findOne(anyInt())).thenReturn(accountEntity);
         when(accountRepository.findAll()).thenReturn(accountEntityList);

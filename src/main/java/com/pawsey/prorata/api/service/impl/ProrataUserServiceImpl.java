@@ -44,14 +44,18 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     @Override
     @Transactional
     public ProrataUserEntity create(ProrataUserEntity user) {
-        ProrataUserEntity persistedUser = super.create(user);
-        persistCollections(user, persistedUser);
+        if(!"".equals(user.getEmail()) && user.getEmail() != null) {
+            ProrataUserEntity persistedUser = super.create(user);
+            persistCollections(user, persistedUser);
 
-        if (user.getListOfSubscription() == null || user.getListOfSubscription().isEmpty()) {
-            persistedUser = setDefaultSubscription(persistedUser);
+            if (user.getListOfSubscription() == null || user.getListOfSubscription().isEmpty()) {
+                persistedUser = setDefaultSubscription(persistedUser);
+            }
+
+            return checkCredentials(persistedUser.getEmail(), persistedUser.getPassword());
+        } else {
+            throw new IllegalArgumentException("User must have an email address to be created");
         }
-
-        return checkCredentials(persistedUser.getEmail(), persistedUser.getPassword());
     }
 
     @Override
