@@ -6,6 +6,12 @@ test:
  override:
    - gradle clean build
 
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init
+    - git submodule foreach --recursive git checkout master
+    
 deployment:
   production:
     branch: master
@@ -16,8 +22,4 @@ deployment:
     artifacts:
       -/home/ubuntu/**repo_name**/build/outputs/reports/**testFolderName**/connected
 
-  checkout:
-    post:
-      - git submodule sync
-      - git submodule update --init
-      - git submodule foreach --recursive git checkout master
+
