@@ -23,6 +23,6 @@ general:
     only:
       - master
   artifacts:
-      -/home/ubuntu/**repo_name**/build/outputs/reports/**testFolderName**/connected
+      - "/home/ubuntu/**repo_name**/build/outputs/reports/**testFolderName**/connected"
 
 
