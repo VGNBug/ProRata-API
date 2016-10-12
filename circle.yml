@@ -11,15 +11,18 @@ checkout:
     - git submodule sync
     - git submodule update --init
     - git submodule foreach --recursive git checkout master
-    
+
 deployment:
   production:
     branch: master
     heroku:
       appname: prorata-api
       
-  general:
-    artifacts:
+general:
+  branches:
+    only:
+      - master
+  artifacts:
       -/home/ubuntu/**repo_name**/build/outputs/reports/**testFolderName**/connected
 
 
