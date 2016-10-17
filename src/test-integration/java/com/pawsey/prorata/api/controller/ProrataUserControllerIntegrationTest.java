@@ -1,12 +1,11 @@
 package com.pawsey.prorata.api.controller;
 
-import com.pawsey.api.rest.controller.BaseControllerIntegrationTest;
+import com.pawsey.api.controller.rest.BaseControllerIntegrationTest;
 import com.pawsey.prorata.api.ProRataApiApplication;
 import com.pawsey.prorata.model.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpStatus;
