@@ -2,9 +2,13 @@ machine:
   java: 
     version: oraclejdk8
 
+dependencies:
+  cache_directories:
+    - "~/.gradle"
+
 test:
  override:
-   - gradle clean build --stacktrace
+   - gradle clean build -i
 
 checkout:
   post:
