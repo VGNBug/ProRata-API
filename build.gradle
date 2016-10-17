@@ -43,17 +43,12 @@ sourceSets {
 configurations {
     integrationTestCompile.extendsFrom testCompile
     integrationTestRuntime.extendsFrom testRuntime
-    mainBuild
-}
-
-dependencies {
-    mainBuild sourceSets.main.output
 }
 
 dependencies {
     // Local sub-projects
-    compile project(path: 'Generic-SpringBoot-API', configuration: 'mainBuild')
-    compile project(path: 'ProRata-Model', configuration: 'mainBuild')
+    compile project(path: 'Generic-SpringBoot-API', configuration: 'compile')
+    compile project(path: 'ProRata-Model', configuration: 'compile')
     testCompile project(path: ':Generic-SpringBoot-API', configuration: 'testOutput')
 
     // Remote
