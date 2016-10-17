@@ -43,6 +43,7 @@ sourceSets {
 configurations {
     integrationTestCompile.extendsFrom testCompile
     integrationTestRuntime.extendsFrom testRuntime
+    it."default"
 }
 
 dependencies {
