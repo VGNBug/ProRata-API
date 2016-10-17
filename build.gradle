@@ -49,16 +49,16 @@ dependencies {
     // Local sub-projects
     compile project('Generic-SpringBoot-API')
     compile project('ProRata-Model')
-    testCompile project(path: ':Generic-SpringBoot-API', configuration: 'testOutput')
+//    testCompile project(path: ':Generic-SpringBoot-API', configuration: 'testOutput')
 
     // Remote
-//    compile('org.springframework.boot:spring-boot-starter')
-//    compile('org.springframework.boot:spring-boot-starter-web')
-//    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-//    compile('org.springframework.boot:spring-boot-starter-jdbc')
-//    runtime('org.postgresql:postgresql')
-//    testCompile('org.springframework.boot:spring-boot-starter-test')
-//    testCompile('org.dbunit:dbunit:2.4.9')
+    compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-jdbc')
+    runtime('org.postgresql:postgresql')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.dbunit:dbunit:2.4.9')
 }
 
 eclipse {
