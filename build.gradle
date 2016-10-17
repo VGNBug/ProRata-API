@@ -47,8 +47,8 @@ configurations {
 
 dependencies {
     // Local sub-projects
-    compile project('Generic-SpringBoot-API')
-    compile project('ProRata-Model')
+    compile project(path: 'Generic-SpringBoot-API', configuration: 'default')
+    compile project(path: 'ProRata-Model', configuration: 'default')
     testCompile project(path: ':Generic-SpringBoot-API', configuration: 'testOutput')
 
     // Remote
