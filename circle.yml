@@ -4,7 +4,7 @@ machine:
 
 test:
  override:
-   - gradle clean build
+   - gradle clean build --stacktrace
 
 checkout:
   post:
