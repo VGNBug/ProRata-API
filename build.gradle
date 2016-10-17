@@ -47,9 +47,8 @@ configurations {
 
 dependencies {
     // Local sub-projects
-    compile project(path: 'Generic-SpringBoot-API', configuration: 'runtime')
-    compile project(path: 'ProRata-Model', configuration: 'runtime')
-    testCompile project(path: ':Generic-SpringBoot-API', configuration: 'testOutput')
+    compile project('Generic-SpringBoot-API')
+    compile project('ProRata-Model')
 
     // Remote
     compile('org.springframework.boot:spring-boot-starter')
