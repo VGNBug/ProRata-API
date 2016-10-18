@@ -2,9 +2,9 @@ package com.pawsey.prorata.api.service.impl;
 
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
+import com.pawsey.prorata.api.model.*;
 import com.pawsey.prorata.api.repository.*;
 import com.pawsey.prorata.api.service.ProrataUserService;
-import com.pawsey.prorata.model.*;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

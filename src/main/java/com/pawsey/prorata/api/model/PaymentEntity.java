@@ -4,33 +4,36 @@
  */
 // This Bean has a basic Primary Key (not composite) 
 
-package model;
+package com.pawsey.prorata.api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 
 /**
- * Persistent class for entity stored in table "tax_deduction"
+ * Persistent class for entity stored in table "payment"
  *
  * @author Telosys Tools Generator
  *
  */
 
 @Entity
-@Table(name="tax_deduction", schema="public" )
+@Table(name="payment", schema="public" )
 // Define named queries here
 @NamedQueries ( {
-  @NamedQuery ( name="TaxDeductionEntity.countAll", query="SELECT COUNT(x) FROM TaxDeductionEntity x" )
+  @NamedQuery ( name="PaymentEntity.countAll", query="SELECT COUNT(x) FROM PaymentEntity x" )
 } )
 @JsonIgnoreProperties(ignoreUnknown = true) 
-public class TaxDeductionEntity implements Serializable {
+public class PaymentEntity implements Serializable {
 
     protected static final long serialVersionUID = 1L;
 
@@ -38,51 +41,57 @@ public class TaxDeductionEntity implements Serializable {
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @Column(name="tax_deduction_id", nullable=false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tax_deduction_tax_deduction_id_pk_seq")
-    @SequenceGenerator(name = "tax_deduction_tax_deduction_id_pk_seq", sequenceName = "tax_deduction_tax_deduction_id_pk_seq")
-    protected Integer    taxDeductionId ;
+    @Column(name="payment_id", nullable=false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_payment_id_pk_seq")
+    @SequenceGenerator(name = "payment_payment_id_pk_seq", sequenceName = "payment_payment_id_pk_seq")
+    protected Integer    paymentId    ;
 
 
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="amount")
+    @Column(name="amount", nullable=false)
     protected BigDecimal amount       ;
 
-	// "taxBracketId" (column "tax_bracket_id") is not defined by itself because used as FK in a link 
-	// "paymentId" (column "payment_id") is not defined by itself because used as FK in a link 
+    @Temporal(TemporalType.DATE)
+    @Column(name="payment_date")
+    protected Date       paymentDate  ;
+
+	// "employmentId" (column "employment_id") is not defined by itself because used as FK in a link 
 
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @JsonBackReference("PaymentEntity_TaxDeductionEntity")
-    @ManyToOne
-    @JoinColumn(name="payment_id", referencedColumnName="payment_id")
-    protected PaymentEntity payment     ;
+    @JsonManagedReference("PaymentEntity_TaxDeductionEntity")
+    @OneToMany(mappedBy="payment", targetEntity=TaxDeductionEntity.class)
+    protected List<TaxDeductionEntity> listOfTaxDeduction;
 
-    @JsonBackReference("TaxBracketEntity_TaxDeductionEntity")
+    @JsonBackReference("EmploymentEntity_PaymentEntity")
     @ManyToOne
-    @JoinColumn(name="tax_bracket_id", referencedColumnName="tax_bracket_id")
-    protected TaxBracketEntity taxBracket  ;
+    @JoinColumn(name="employment_id", referencedColumnName="employment_id")
+    protected EmploymentEntity employment  ;
+
+    @JsonManagedReference("PaymentEntity_PayChequeEntity")
+    @OneToMany(mappedBy="payment", targetEntity= PayChequeEntity.class)
+    protected List<PayChequeEntity> listOfPayCheque;
 
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
-    public TaxDeductionEntity() {
+    public PaymentEntity() {
 		super();
     }
 
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
-    public void setTaxDeductionId( Integer taxDeductionId ) {
-        this.taxDeductionId = taxDeductionId ;
+    public void setPaymentId( Integer paymentId ) {
+        this.paymentId = paymentId ;
     }
-    public Integer getTaxDeductionId() {
-        return this.taxDeductionId;
+    public Integer getPaymentId() {
+        return this.paymentId;
     }
 
     //----------------------------------------------------------------------
@@ -96,22 +105,37 @@ public class TaxDeductionEntity implements Serializable {
         return this.amount;
     }
 
+    //--- DATABASE MAPPING : payment_date ( date )
+    public void setPaymentDate( Date paymentDate ) {
+        this.paymentDate = paymentDate;
+    }
+    public Date getPaymentDate() {
+        return this.paymentDate;
+    }
+
 
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR LINKS
     //----------------------------------------------------------------------
-    public void setPayment( PaymentEntity payment ) {
-        this.payment = payment;
+    public void setListOfTaxDeduction( List<TaxDeductionEntity> listOfTaxDeduction ) {
+        this.listOfTaxDeduction = listOfTaxDeduction;
     }
-    public PaymentEntity getPayment() {
-        return this.payment;
+    public List<TaxDeductionEntity> getListOfTaxDeduction() {
+        return this.listOfTaxDeduction;
     }
 
-    public void setTaxBracket( TaxBracketEntity taxBracket ) {
-        this.taxBracket = taxBracket;
+    public void setEmployment( EmploymentEntity employment ) {
+        this.employment = employment;
     }
-    public TaxBracketEntity getTaxBracket() {
-        return this.taxBracket;
+    public EmploymentEntity getEmployment() {
+        return this.employment;
+    }
+
+    public void setListOfPayCheque( List<PayChequeEntity> listOfPayCheque ) {
+        this.listOfPayCheque = listOfPayCheque;
+    }
+    public List<PayChequeEntity> getListOfPayCheque() {
+        return this.listOfPayCheque;
     }
 
 
@@ -121,9 +145,11 @@ public class TaxDeductionEntity implements Serializable {
     public String toString() { 
         StringBuffer sb = new StringBuffer(); 
         sb.append("["); 
-        sb.append(taxDeductionId);
+        sb.append(paymentId);
         sb.append("]:"); 
         sb.append(amount);
+        sb.append("|");
+        sb.append(paymentDate);
         return sb.toString(); 
     } 
 

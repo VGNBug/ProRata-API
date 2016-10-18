@@ -8,8 +8,7 @@ dependencies:
 
 test:
  override:
-   - gradle clean build -i
-
+   - gradle clean build -stacktrace
 checkout:
   post:
     - git submodule sync

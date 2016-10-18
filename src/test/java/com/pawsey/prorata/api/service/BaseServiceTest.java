@@ -1,4 +1,4 @@
-package com.pawsey.prorata.api;
+package com.pawsey.prorata.api.service;
 
 import com.pawsey.prorata.api.repository.BaseRepository;
 import com.pawsey.prorata.api.service.BaseService;

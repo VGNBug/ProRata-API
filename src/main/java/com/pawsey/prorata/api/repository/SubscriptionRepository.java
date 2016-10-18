@@ -1,6 +1,6 @@
 package com.pawsey.prorata.api.repository;
 
-import com.pawsey.prorata.model.SubscriptionEntity;
+import com.pawsey.prorata.api.model.SubscriptionEntity;
 
 /**
  * Repository : Subscription.

@@ -1,11 +1,12 @@
-package com.pawsey.prorata.api;
+package com.pawsey.prorata.api.service;
 
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
+import com.pawsey.prorata.api.model.*;
 import com.pawsey.prorata.api.repository.*;
+import com.pawsey.prorata.api.service.BaseServiceTest;
 import com.pawsey.prorata.api.service.ProrataUserService;
 import com.pawsey.prorata.api.service.impl.ProrataUserServiceImpl;
-import com.pawsey.prorata.model.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

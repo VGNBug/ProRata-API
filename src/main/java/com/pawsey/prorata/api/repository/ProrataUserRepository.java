@@ -1,6 +1,6 @@
 package com.pawsey.prorata.api.repository;
 
-import com.pawsey.prorata.model.ProrataUserEntity;
+import com.pawsey.prorata.api.model.ProrataUserEntity;
 import org.springframework.data.jpa.repository.Query;
 
 /**

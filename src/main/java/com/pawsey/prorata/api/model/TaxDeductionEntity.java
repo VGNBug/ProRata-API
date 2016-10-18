@@ -4,32 +4,33 @@
  */
 // This Bean has a basic Primary Key (not composite) 
 
-package model;
+package com.pawsey.prorata.api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 
 /**
- * Persistent class for entity stored in table "contract"
+ * Persistent class for entity stored in table "tax_deduction"
  *
  * @author Telosys Tools Generator
  *
  */
 
 @Entity
-@Table(name="contract", schema="public" )
+@Table(name="tax_deduction", schema="public" )
 // Define named queries here
 @NamedQueries ( {
-  @NamedQuery ( name="ContractEntity.countAll", query="SELECT COUNT(x) FROM ContractEntity x" )
+  @NamedQuery ( name="TaxDeductionEntity.countAll", query="SELECT COUNT(x) FROM TaxDeductionEntity x" )
 } )
 @JsonIgnoreProperties(ignoreUnknown = true) 
-public class ContractEntity implements Serializable {
+public class TaxDeductionEntity implements Serializable {
 
     protected static final long serialVersionUID = 1L;
 
@@ -37,56 +38,80 @@ public class ContractEntity implements Serializable {
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @Column(name="contract_id", nullable=false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contract_contract_id_pk_seq")
-    @SequenceGenerator(name = "contract_contract_id_pk_seq", sequenceName = "contract_contract_id_pk_seq")
-    protected Integer    contractId   ;
+    @Column(name="tax_deduction_id", nullable=false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tax_deduction_tax_deduction_id_pk_seq")
+    @SequenceGenerator(name = "tax_deduction_tax_deduction_id_pk_seq", sequenceName = "tax_deduction_tax_deduction_id_pk_seq")
+    protected Integer    taxDeductionId ;
 
 
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-	// "employmentId" (column "employment_id") is not defined by itself because used as FK in a link 
+    @Column(name="amount")
+    protected BigDecimal amount       ;
+
+	// "taxBracketId" (column "tax_bracket_id") is not defined by itself because used as FK in a link 
+	// "paymentId" (column "payment_id") is not defined by itself because used as FK in a link 
 
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @JsonBackReference("EmploymentEntity_ContractEntity")
+    @JsonBackReference("PaymentEntity_TaxDeductionEntity")
     @ManyToOne
-    @JoinColumn(name="employment_id", referencedColumnName="employment_id")
-    protected EmploymentEntity employment  ;
+    @JoinColumn(name="payment_id", referencedColumnName="payment_id")
+    protected PaymentEntity payment     ;
+
+    @JsonBackReference("TaxBracketEntity_TaxDeductionEntity")
+    @ManyToOne
+    @JoinColumn(name="tax_bracket_id", referencedColumnName="tax_bracket_id")
+    protected TaxBracketEntity taxBracket  ;
 
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
-    public ContractEntity() {
+    public TaxDeductionEntity() {
 		super();
     }
 
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
-    public void setContractId( Integer contractId ) {
-        this.contractId = contractId ;
+    public void setTaxDeductionId( Integer taxDeductionId ) {
+        this.taxDeductionId = taxDeductionId ;
     }
-    public Integer getContractId() {
-        return this.contractId;
+    public Integer getTaxDeductionId() {
+        return this.taxDeductionId;
     }
 
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR FIELDS
     //----------------------------------------------------------------------
+    //--- DATABASE MAPPING : amount ( numeric )
+    public void setAmount( BigDecimal amount ) {
+        this.amount = amount;
+    }
+    public BigDecimal getAmount() {
+        return this.amount;
+    }
+
 
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR LINKS
     //----------------------------------------------------------------------
-    public void setEmployment( EmploymentEntity employment ) {
-        this.employment = employment;
+    public void setPayment( PaymentEntity payment ) {
+        this.payment = payment;
     }
-    public EmploymentEntity getEmployment() {
-        return this.employment;
+    public PaymentEntity getPayment() {
+        return this.payment;
+    }
+
+    public void setTaxBracket( TaxBracketEntity taxBracket ) {
+        this.taxBracket = taxBracket;
+    }
+    public TaxBracketEntity getTaxBracket() {
+        return this.taxBracket;
     }
 
 
@@ -96,8 +121,9 @@ public class ContractEntity implements Serializable {
     public String toString() { 
         StringBuffer sb = new StringBuffer(); 
         sb.append("["); 
-        sb.append(contractId);
+        sb.append(taxDeductionId);
         sb.append("]:"); 
+        sb.append(amount);
         return sb.toString(); 
     } 
 

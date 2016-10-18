@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @SpringBootApplication
-@EntityScan("com.pawsey.prorata.model")
+@EntityScan("com.pawsey.prorata.api.model")
 public class ProRataApiApplication extends GenericApplication {
 
 	@RequestMapping("/")

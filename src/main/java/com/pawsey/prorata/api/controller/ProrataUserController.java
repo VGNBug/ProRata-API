@@ -2,8 +2,8 @@ package com.pawsey.prorata.api.controller;
 
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
+import com.pawsey.prorata.api.model.ProrataUserEntity;
 import com.pawsey.prorata.api.service.ProrataUserService;
-import com.pawsey.prorata.model.ProrataUserEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +22,11 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     }
 
     /**
-     * Creates a new {@link com.pawsey.prorata.model.ProrataUserEntity}
+     * Creates a new {@link ProrataUserEntity}
      *
      * @param newUser A {@link Map} of properties corresponding to those of
      *                {@link ProrataUserEntity}
-     * @return A newly persisted {@link com.pawsey.prorata.model.ProrataUserEntity}
+     * @return A newly persisted {@link ProrataUserEntity}
      * @throws PersistenceException if the data cannot be persisted and / or returned.
      */
     @Override
@@ -42,7 +42,7 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
      *                 to be returned.
      * @param password The {@link ProrataUserEntity#password password} of the ProrataUserEntity
      *                 to be returned.
-     * @return A single {@link com.pawsey.prorata.model.ProrataUserEntity} with a matching email address and password.
+     * @return A single {@link ProrataUserEntity} with a matching email address and password.
      * @throws EntityNotFoundException If no such entity can be found, or the operation cannot be completed.
      */
     @RequestMapping(value = "/{email}/{password}", method = RequestMethod.GET)
@@ -60,12 +60,12 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     }
 
     /**
-     * Updates an existing {@link com.pawsey.prorata.model.ProrataUserEntity}.
+     * Updates an existing {@link ProrataUserEntity}.
      *
      * @param email      The email address of the user to be updated, which is used to find the entity in the database.
      * @param password   The password of the user to be updated, which must match for the update to be allowed.
      * @param updateUser A map of how the user's data will appear once updated.
-     * @return The updated {@link com.pawsey.prorata.model.ProrataUserEntity}.
+     * @return The updated {@link ProrataUserEntity}.
      */
     @RequestMapping(value = "{email}/{password}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -84,8 +84,8 @@ public class ProrataUserController extends BaseRestController<ProrataUserEntity,
     /**
      * Allows a user to be deleted when a valid email and password are supplied.
      *
-     * @param email    The {@link com.pawsey.prorata.model.ProrataUserEntity#email} attribute of the user to be deleted.
-     * @param password The {@link com.pawsey.prorata.model.ProrataUserEntity#password} attribute of the user to be
+     * @param email    The {@link ProrataUserEntity#email} attribute of the user to be deleted.
+     * @param password The {@link ProrataUserEntity#password} attribute of the user to be
      *                 deleted.
      */
     @RequestMapping(value = "/{email}/{password}", method = RequestMethod.DELETE)

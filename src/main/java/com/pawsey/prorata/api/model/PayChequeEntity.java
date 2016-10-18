@@ -4,34 +4,32 @@
  */
 // This Bean has a basic Primary Key (not composite) 
 
-package model;
+package com.pawsey.prorata.api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.List;
 
 //import javax.validation.constraints.* ;
 //import org.hibernate.validator.constraints.* ;
 
 /**
- * Persistent class for entity stored in table "subscription_type"
+ * Persistent class for entity stored in table "pay_cheque"
  *
  * @author Telosys Tools Generator
  *
  */
 
 @Entity
-@Table(name="subscription_type", schema="public" )
+@Table(name="pay_cheque", schema="public" )
 // Define named queries here
 @NamedQueries ( {
-  @NamedQuery ( name="SubscriptionTypeEntity.countAll", query="SELECT COUNT(x) FROM SubscriptionTypeEntity x" )
+  @NamedQuery ( name="PayChequeEntity.countAll", query="SELECT COUNT(x) FROM PayChequeEntity x" )
 } )
 @JsonIgnoreProperties(ignoreUnknown = true) 
-public class SubscriptionTypeEntity implements Serializable {
+public class PayChequeEntity implements Serializable {
 
     protected static final long serialVersionUID = 1L;
 
@@ -39,76 +37,56 @@ public class SubscriptionTypeEntity implements Serializable {
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @Column(name="subscription_type_id", nullable=false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subscription_type_subscription_type_id_pk_seq")
-    @SequenceGenerator(name = "subscription_type_subscription_type_id_pk_seq", sequenceName = "subscription_type_subscription_type_id_pk_seq")
-    protected Integer    subscriptionTypeId ;
+    @Column(name="pay_cheque_id", nullable=false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pay_cheque_pay_cheque_id_pk_seq")
+    @SequenceGenerator(name = "pay_cheque_pay_cheque_id_pk_seq", sequenceName = "pay_cheque_pay_cheque_id_pk_seq")
+    protected Integer    payChequeId  ;
 
 
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="name", nullable=false, length=30)
-    protected String     name         ;
-
-    @Column(name="rate", nullable=false)
-    protected BigDecimal rate         ;
-
+	// "paymentId" (column "payment_id") is not defined by itself because used as FK in a link 
 
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @JsonManagedReference("SubscriptionTypeEntity_SubscriptionEntity")
-    @OneToMany(mappedBy="subscriptionType", targetEntity= SubscriptionEntity.class)
-    protected List<SubscriptionEntity> listOfSubscription;
+    @JsonBackReference("PaymentEntity_PayChequeEntity")
+    @ManyToOne
+    @JoinColumn(name="payment_id", referencedColumnName="payment_id")
+    protected PaymentEntity payment     ;
 
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
-    public SubscriptionTypeEntity() {
+    public PayChequeEntity() {
 		super();
     }
-
+    
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
-    public void setSubscriptionTypeId( Integer subscriptionTypeId ) {
-        this.subscriptionTypeId = subscriptionTypeId ;
+    public void setPayChequeId( Integer payChequeId ) {
+        this.payChequeId = payChequeId ;
     }
-    public Integer getSubscriptionTypeId() {
-        return this.subscriptionTypeId;
+    public Integer getPayChequeId() {
+        return this.payChequeId;
     }
 
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR FIELDS
     //----------------------------------------------------------------------
-    //--- DATABASE MAPPING : name ( varchar )
-    public void setName( String name ) {
-        this.name = name;
-    }
-    public String getName() {
-        return this.name;
-    }
-
-    //--- DATABASE MAPPING : rate ( numeric )
-    public void setRate( BigDecimal rate ) {
-        this.rate = rate;
-    }
-    public BigDecimal getRate() {
-        return this.rate;
-    }
-
 
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR LINKS
     //----------------------------------------------------------------------
-    public void setListOfSubscription( List<SubscriptionEntity> listOfSubscription ) {
-        this.listOfSubscription = listOfSubscription;
+    public void setPayment( PaymentEntity payment ) {
+        this.payment = payment;
     }
-    public List<SubscriptionEntity> getListOfSubscription() {
-        return this.listOfSubscription;
+    public PaymentEntity getPayment() {
+        return this.payment;
     }
 
 
@@ -118,11 +96,8 @@ public class SubscriptionTypeEntity implements Serializable {
     public String toString() { 
         StringBuffer sb = new StringBuffer(); 
         sb.append("["); 
-        sb.append(subscriptionTypeId);
+        sb.append(payChequeId);
         sb.append("]:"); 
-        sb.append(name);
-        sb.append("|");
-        sb.append(rate);
         return sb.toString(); 
     } 
 

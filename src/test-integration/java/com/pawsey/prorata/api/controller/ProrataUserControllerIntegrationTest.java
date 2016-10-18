@@ -1,7 +1,7 @@
 package com.pawsey.prorata.api.controller;
 
 import com.pawsey.prorata.api.ProRataApiApplication;
-import com.pawsey.prorata.model.*;
+import com.pawsey.prorata.api.model.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

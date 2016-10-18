@@ -4,7 +4,7 @@
  */
 // This Bean has a basic Primary Key (not composite) 
 
-package model;
+package com.pawsey.prorata.api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
