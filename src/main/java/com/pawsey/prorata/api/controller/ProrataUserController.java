@@ -1,6 +1,5 @@
 package com.pawsey.prorata.api.controller;
 
-import com.pawsey.api.controller.rest.BaseRestController;
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.service.ProrataUserService;

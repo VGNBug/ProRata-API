@@ -1,3 +1,2 @@
 rootProject.name = 'ProRata-API'
-include 'Generic-SpringBoot-API'
 include 'ProRata-Model'

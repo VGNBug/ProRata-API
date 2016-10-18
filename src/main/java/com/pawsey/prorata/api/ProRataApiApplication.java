@@ -1,6 +1,5 @@
 package com.pawsey.prorata.api;
 
-import com.pawsey.api.GenericApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.orm.jpa.EntityScan;
