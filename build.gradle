@@ -50,9 +50,6 @@ configurations {
 }
 
 dependencies {
-    // Local sub-projects
-    compile project('ProRata-Model')
-
     // Remote
     compile('org.springframework.boot:spring-boot-starter')
     compile('org.springframework.boot:spring-boot-starter-web')
