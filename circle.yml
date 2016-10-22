@@ -19,7 +19,8 @@ deployment:
   production:
     branch: master
     heroku:
-      appname: prorata-api
+      appname: prorata-api-staging
+
       
 general:
   branches:
