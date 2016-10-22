@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     /*
     Read: Sad paths
      */
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = RestClientException.class)
     public void testRead_FailsWithWrongEmailRightPassword() {
         ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(SAD_PATH_EMAIL, expected.getPassword());
 
@@ -107,7 +108,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertNull(response.getBody());
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = RestClientException.class)
     public void testRead_FailsWithRightEmailWrongPassword() {
         ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(expected.getEmail(), SAD_PATH_PASSWORD);
 
@@ -115,7 +116,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertNull(response.getBody());
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = RestClientException.class)
     public void testRead_FailsWithWrongEmailWrongPassword() {
         ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(SAD_PATH_EMAIL, SAD_PATH_PASSWORD);
 

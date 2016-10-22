@@ -35,13 +35,13 @@ public abstract class BaseControllerIntegrationTest<T> {
     private T baseEntityExemplar;
 
     @Value("${spring.datasource.url}")
-    private final String JDBC_URL = "jdbc:postgresql://localhost:5432/ProRata";
-    @Value("${spring.database.driverClassName}")
-    private final String DRIVER = "org.postgresql.Driver";
+    private  String JDBC_URL;
+    @Value("${spring.datasource.driverClassName}")
+    private  String DRIVER;
     @Value("${spring.datasource.username}")
-    private final String USER = "postgres";
+    private  String USER;
     @Value("${spring.datasource.password}")
-    private final String PASSWORD = "postgres";
+    private  String PASSWORD;
 
     /**
      * The {@link BaseRestController#create(Map)} method relies on fields unique to
