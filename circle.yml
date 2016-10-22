@@ -6,7 +6,7 @@ dependencies:
   cache_directories:
     - "~/.gradle"
 
-test:
+test:w
  override:
    - gradle clean build -stacktrace
 checkout:
