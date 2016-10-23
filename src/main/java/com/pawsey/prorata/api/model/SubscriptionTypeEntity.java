@@ -48,7 +48,7 @@ public class SubscriptionTypeEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="name", nullable=false, length=30)
+    @Column(name="name", nullable=false, length=100)
     protected String     name         ;
 
     @Column(name="rate", nullable=false)

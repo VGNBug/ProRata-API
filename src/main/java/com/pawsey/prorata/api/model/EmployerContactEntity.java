@@ -46,13 +46,13 @@ public class EmployerContactEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="contact_name", length=10)
+    @Column(name="contact_name", length=100)
     protected String     contactName  ;
 
-    @Column(name="contact_type", length=10)
+    @Column(name="contact_type", length=100)
     protected String     contactType  ;
 
-    @Column(name="contact_body", length=10)
+    @Column(name="contact_body", length=100)
     protected String     contactBody  ;
 
 	// "employerId" (column "employer_id") is not defined by itself because used as FK in a link 

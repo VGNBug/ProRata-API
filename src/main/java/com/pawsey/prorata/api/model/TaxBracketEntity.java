@@ -59,7 +59,7 @@ public class TaxBracketEntity implements Serializable {
     @Column(name="percent_deduction")
     protected BigDecimal percentDeduction ;
 
-    @Column(name="tax_code", length=10)
+    @Column(name="tax_code", length=100)
     protected String     taxCode      ;
 
 
