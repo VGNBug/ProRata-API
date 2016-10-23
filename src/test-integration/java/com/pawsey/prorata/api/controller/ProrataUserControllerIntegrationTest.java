@@ -13,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
@@ -155,7 +156,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     /**
      * Update- Sad paths
      */
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = ResourceAccessException.class)
     public void testUpdate_MalformedUserShouldFail() {
         MalformedProrataUserEntity malformedUpdateUser = new MalformedProrataUserEntity();
         malformedUpdateUser.setBadId(-1);
