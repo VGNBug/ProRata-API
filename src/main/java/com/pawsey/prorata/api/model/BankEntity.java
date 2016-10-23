@@ -68,7 +68,7 @@ public class BankEntity implements Serializable {
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
     @JsonManagedReference("BankEntity_AccountEntity")
-    @OneToMany(mappedBy="bank", targetEntity= AccountEntity.class)
+    @OneToMany(mappedBy="bank", cascade = CascadeType.ALL, targetEntity= AccountEntity.class)
     protected List<AccountEntity> listOfAccount;
 
 

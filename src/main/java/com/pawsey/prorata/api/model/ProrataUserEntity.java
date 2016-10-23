@@ -83,7 +83,7 @@ public class ProrataUserEntity implements Serializable {
     protected List<EmploymentEntity> listOfEmployment;
 
     @JsonManagedReference("ProrataUserEntity_AccountEntity")
-    @OneToMany(mappedBy="prorataUser", targetEntity= AccountEntity.class)
+    @OneToMany(mappedBy="prorataUser", cascade = CascadeType.ALL, targetEntity= AccountEntity.class)
     protected List<AccountEntity> listOfAccount;
 
 
