@@ -1,0 +1,12 @@
+<!-- Dataset for database population using DBUnit during integration testing -->
+
+<dataset>
+    <prorata_user
+        prorata_user_id="1"
+        email="bob@test.com"
+        password="password"
+        first_name="Bob"
+        last_name="Alison"
+        address="1 Test lane"
+        postcode="TE12ST" />
+</dataset>
