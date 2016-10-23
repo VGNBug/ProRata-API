@@ -46,12 +46,6 @@ configurations {
 }
 
 dependencies {
-    // Local sub-projects
-    compile project('Generic-SpringBoot-API')
-    compile project('ProRata-Model')
-    testCompile project(path: ':Generic-SpringBoot-API', configuration: 'testOutput')
-
-    // Remote
     compile('org.springframework.boot:spring-boot-starter')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -66,6 +60,12 @@ eclipse {
         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
     }
+}
+
+def String propertiesFile = "src/main/resources/application.properties"
+
+if (project.hasProperty('propFile')) {
+    propertiesFile = "$propFile";
 }
 
 task wrapper(type: Wrapper) {
@@ -84,9 +84,15 @@ task copyToLib(type: Copy) {
 stage.dependsOn(copyToLib)
 
 task integrationTest(type: Test) {
+    println("Integration tests running against file: $propertiesFile")
     testClassesDir = sourceSets.integrationTest.output.classesDir
     classpath = sourceSets.integrationTest.runtimeClasspath
+
+    String activeProfile = System.properties['spring.profiles.active']
+    systemProperty "spring.profiles.active", activeProfile
+    systemProperty "spring.config.location", "file:$propertiesFile"
 }
+
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test

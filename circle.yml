@@ -1,23 +1,34 @@
-machine: 
-  java: 
+machine:
+  java:
     version: oraclejdk8
+  services:
+    - postgresql
+
+database:
+  override:
+    - createdb ProRata
+    - psql -d ProRata -a -f tables.sql
+
+dependencies:
+  override:
+    - gradle dependencies -PpropFile=src/main/resources/application-circle.properties
 
 test:
  override:
-   - gradle clean build
+   - gradle clean build -PpropFile=src/main/resources/application-circle.properties
+ post:
+   - cp -R build/reports/ $CIRCLE_TEST_REPORTS
+   - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+   - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 
 deployment:
-  production:
-    branch: master
+  staging:
+    branch: staging
     heroku:
-      appname: prorata-api
-      
-  general:
-    artifacts:
-      -/home/ubuntu/**repo_name**/build/outputs/reports/**testFolderName**/connected
+      appname: prorata-api-staging
 
-  checkout:
-    post:
-      - git submodule sync
-      - git submodule update --init
-      - git submodule foreach --recursive git checkout master
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init
+    - git submodule foreach --recursive git checkout master
