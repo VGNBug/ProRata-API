@@ -50,7 +50,7 @@ public class EmploymentEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="name", nullable=false, length=10)
+    @Column(name="name", nullable=false, length=100)
     protected String     name         ;
 
     @Column(name="hourly_rate", nullable=false)

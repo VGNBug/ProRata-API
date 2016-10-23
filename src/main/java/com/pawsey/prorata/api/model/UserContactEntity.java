@@ -46,18 +46,18 @@ public class UserContactEntity implements Serializable {
 
 
     //----------------------------------------------------------------------
-    // ENTITY DATA FIELDS 
-    //----------------------------------------------------------------------    
-    @Column(name="contact_name", length=10)
+    // ENTITY DATA FIELDS
+    //----------------------------------------------------------------------
+    @Column(name="contact_name", length=100)
     protected String     contactName  ;
 
-    @Column(name="contact_type", length=10)
+    @Column(name="contact_type", length=100)
     protected String     contactType  ;
 
-    @Column(name="contact_body", length=10)
+    @Column(name="contact_body", length=100)
     protected String     contactBody  ;
 
-	// "prorataUserId" (column "prorata_user_id") is not defined by itself because used as FK in a link 
+	// "prorataUserId" (column "prorata_user_id") is not defined by itself because used as FK in a link
 
 
     //----------------------------------------------------------------------
@@ -151,17 +151,17 @@ public class UserContactEntity implements Serializable {
     //----------------------------------------------------------------------
     // toString METHOD
     //----------------------------------------------------------------------
-    public String toString() { 
-        StringBuffer sb = new StringBuffer(); 
-        sb.append("["); 
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("[");
         sb.append(userContactId);
-        sb.append("]:"); 
+        sb.append("]:");
         sb.append(contactName);
         sb.append("|");
         sb.append(contactType);
         sb.append("|");
         sb.append(contactBody);
-        return sb.toString(); 
+        return sb.toString();
     } 
 
 }

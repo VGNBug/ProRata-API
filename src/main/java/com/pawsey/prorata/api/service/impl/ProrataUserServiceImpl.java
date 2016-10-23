@@ -157,7 +157,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         ProrataUserEntity matchByEmail = null;
 
         try {
-            matchByEmail = repository.findByEmail(email);
+            matchByEmail = repository.findByEmail(email); // TODO failure to find user by email. Check if new user is being persisted correctly by this.create()
         } catch (Exception e) {
             LOGGER.error("Unable to find user by email due to an unknown error.");
             throw new ProrataUserNotFoundException("We're sorry, there was an error. If the error persists, please let us know.");

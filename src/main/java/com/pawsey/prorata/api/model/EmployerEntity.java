@@ -47,13 +47,13 @@ public class EmployerEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="name", nullable=false, length=10)
+    @Column(name="name", nullable=false, length=100)
     protected String     name         ;
 
-    @Column(name="office_address", length=10)
+    @Column(name="office_address", length=100)
     protected String     officeAddress ;
 
-    @Column(name="office_postcode", length=10)
+    @Column(name="office_postcode", length=100)
     protected String     officePostcode ;
 
 

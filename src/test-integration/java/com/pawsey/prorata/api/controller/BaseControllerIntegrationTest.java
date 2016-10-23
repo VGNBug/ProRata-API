@@ -1,5 +1,6 @@
 package com.pawsey.prorata.api.controller;
 
+import org.apache.catalina.core.ApplicationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dbunit.IDatabaseTester;
@@ -8,6 +9,7 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -35,13 +37,13 @@ public abstract class BaseControllerIntegrationTest<T> {
     private T baseEntityExemplar;
 
     @Value("${spring.datasource.url}")
-    private final String JDBC_URL = "jdbc:postgresql://localhost:5432/ProRata";
-    @Value("${spring.database.driverClassName}")
-    private final String DRIVER = "org.postgresql.Driver";
+    private  String JDBC_URL;
+    @Value("${spring.datasource.driverClassName}")
+    private  String DRIVER;
     @Value("${spring.datasource.username}")
-    private final String USER = "postgres";
+    private  String USER;
     @Value("${spring.datasource.password}")
-    private final String PASSWORD = "postgres";
+    private  String PASSWORD;
 
     /**
      * The {@link BaseRestController#create(Map)} method relies on fields unique to
@@ -64,6 +66,8 @@ public abstract class BaseControllerIntegrationTest<T> {
         IDataSet dataSet = readDataSet();
         cleanlyInsertDataset(dataSet);
     }
+
+
 
     protected T makeReadRequest(final String controllerPath, Integer idParam) {
         assertNotNull("controllerPath cannot be null", controllerPath);

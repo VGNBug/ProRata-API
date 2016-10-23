@@ -47,19 +47,19 @@ public class BankEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="name", length=10)
+    @Column(name="name", length=100)
     protected String     name         ;
 
-    @Column(name="address", length=10)
+    @Column(name="address", length=100)
     protected String     address      ;
 
     @Column(name="postcode", length=10)
     protected String     postcode     ;
 
-    @Column(name="telphone", length=10)
+    @Column(name="telphone", length=100)
     protected String     telphone     ;
 
-    @Column(name="email", length=10)
+    @Column(name="email", length=100)
     protected String     email        ;
 
 
@@ -68,7 +68,7 @@ public class BankEntity implements Serializable {
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
     @JsonManagedReference("BankEntity_AccountEntity")
-    @OneToMany(mappedBy="bank", targetEntity= AccountEntity.class)
+    @OneToMany(mappedBy="bank", cascade = CascadeType.ALL, targetEntity= AccountEntity.class)
     protected List<AccountEntity> listOfAccount;
 
 
