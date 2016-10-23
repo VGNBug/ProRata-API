@@ -36,7 +36,7 @@ public abstract class BaseControllerIntegrationTest<T> {
 
     @Value("${spring.datasource.url}")
     private  String JDBC_URL;
-    @Value("${spring.datasource.driverClassName}")
+    @Value("${spring.database.driverClassName}")
     private  String DRIVER;
     @Value("${spring.datasource.username}")
     private  String USER;
