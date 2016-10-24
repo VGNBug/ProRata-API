@@ -19,9 +19,9 @@ test:
 
 deployment:
   staging:
-    branch: master
+    branch: staging
     heroku:
-      appname: prorata-api
+      appname: prorata-api-staging
 
 checkout:
   post:
