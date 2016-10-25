@@ -1,5 +1,6 @@
-package com.pawsey.api.controller.rest;
+package com.pawsey.prorata.api.controller;
 
+import com.pawsey.api.controller.rest.BaseRestController;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dbunit.IDatabaseTester;

@@ -1,6 +1,5 @@
-package com.pawsey.prorata.api;
+package com.pawsey.api.service;
 
-import com.pawsey.api.service.BaseServiceTest;
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.repository.*;

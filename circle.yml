@@ -11,7 +11,7 @@ database:
 
 test:
  override:
-   - gradle clean build
+   - gradle clean circleBuild
  post:
    - cp -R build/reports/ $CIRCLE_TEST_REPORTS
    - mkdir -p $CIRCLE_TEST_REPORTS/junit/

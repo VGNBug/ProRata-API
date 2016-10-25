@@ -62,6 +62,24 @@ eclipse {
     }
 }
 
+def String propertiesFile = "src/main/resources/application.properties"
+
+task localBuild(dependsOn: build) {
+    propertiesFile = "src/main/resources/application-local.properties"
+}
+
+task circleBuild(dependsOn: build) {
+    propertiesFile = "src/main/resources/application-local.properties"
+}
+
+task stagingBuild(dependsOn: build) {
+    propertiesFile = "src/main/resources/application-staging.properties"
+}
+
+task productionBuild(dependsOn: build) {
+    propertiesFile = "src/main/resources/application-production.properties"
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.9'
 }
@@ -78,9 +96,17 @@ task copyToLib(type: Copy) {
 stage.dependsOn(copyToLib)
 
 task integrationTest(type: Test) {
+    println("Integration tests running agains file: $propertiesFile")
     testClassesDir = sourceSets.integrationTest.output.classesDir
     classpath = sourceSets.integrationTest.runtimeClasspath
+
+    String activeProfile =  System.properties['spring.profiles.active']
+    String confLoc = "src/main/resources/application-local.properties"
+
+    systemProperty "spring.profiles.active", activeProfile
+    systemProperty "spring.config.location", "file:$propertiesFile"
 }
+
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
