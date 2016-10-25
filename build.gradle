@@ -69,7 +69,7 @@ task localBuild(dependsOn: build) {
 }
 
 task circleBuild(dependsOn: build) {
-    propertiesFile = "src/main/resources/application-local.properties"
+    propertiesFile = "src/main/resources/application-circle.properties"
 }
 
 task stagingBuild(dependsOn: build) {
