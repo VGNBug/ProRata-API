@@ -86,8 +86,6 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
 
     String activeProfile = System.properties['spring.profiles.active']
-    String confLoc = "src/main/resources/application-local.properties"
-
     systemProperty "spring.profiles.active", activeProfile
     systemProperty "spring.config.location", "file:$propertiesFile"
 }

@@ -9,6 +9,10 @@ database:
     - createdb ProRata
     - psql -d ProRata -a -f tables.sql
 
+dependencies:
+  override:
+    - gradle dependencies -PpropFile=src/main/resources/application-circle.properties
+
 test:
  override:
    - gradle clean build -PpropFile=src/main/resources/application-circle.properties
