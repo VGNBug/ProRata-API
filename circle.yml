@@ -7,6 +7,7 @@ machine:
 database:
   override:
     - createdb ProRata
+    - cd src/database/postgresql
     - psql -d ProRata -a -f tables.sql
 
 dependencies:
