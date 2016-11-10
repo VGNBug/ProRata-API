@@ -29,6 +29,15 @@ import static org.junit.Assert.*;
 @IntegrationTest("${local.server.port}")
 public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrationTest {
 
+    @Value("${spring.datasource.url}")
+    private String JDBC_URL;
+    @Value("${spring.datasource.driverClassName}")
+    private String DRIVER;
+    @Value("${spring.datasource.username}")
+    private String USER;
+    @Value("${spring.datasource.password}")
+    private String PASSWORD;
+
     public static final String CONTROLLER_PATH = "/prorataUser/";
     private final String SAD_PATH_EMAIL = "sadPathEmail@test.com";
     private final String SAD_PATH_PASSWORD = "sadPathPassword";
