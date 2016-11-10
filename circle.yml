@@ -6,7 +6,6 @@ machine:
 
 checkout:
   pre:
-    - git submodule sync
     - git submodule update --init
     - git submodule foreach --recursive git checkout master
 
