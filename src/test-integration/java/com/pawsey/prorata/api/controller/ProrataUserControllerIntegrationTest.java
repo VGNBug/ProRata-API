@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.parsing.Location;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpStatus;
@@ -92,10 +93,43 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
     public void testRead() {
         ResponseEntity<ProrataUserEntity> response = requestGetProrataUserEntity(expected.getEmail(), expected.getPassword());
 
+        Date now = Calendar.getInstance().getTime();
+
+        EmployerEntity employer = new EmployerEntity();
+        employer.setEmployerId(1);
+        employer.setName("The Firm");
+        employer.setOfficeAddress("Firm House, 11 Firm Street, Firmham, Firmhamshire");
+        employer.setOfficePostcode("FI1 2RM");
+
+        EmploymentEntity employment = new EmploymentEntity();
+        employment.setProrataUser(expected);
+        employment.setEmployer(employer);
+        employment.setStartDate(now);
+        employment.setName("Employment with The Firm");
+        employment.setHoursPerWeek(new BigDecimal(40));
+        employment.setHourlyRate(new BigDecimal(11.50));
+
+        EmploymentSessionEntity employmentSession = new EmploymentSessionEntity();
+        employmentSession.setStartTime(now);
+        employmentSession.setEmployment(employment);
+
+        List<EmploymentSessionEntity> employmentSessions = new ArrayList<>();
+        employmentSessions.add(employmentSession);
+
+        LocationEntity location = new LocationEntity();
+        location.setLocationId(1);
+        location.setProrataUser(expected);
+        location.setXCoordinate(new BigDecimal(52.628391));
+        location.setYCoordinate(new BigDecimal(1.294964));
+        location.setListOfEmploymentSession(employmentSessions);
+
+        List<LocationEntity> listOfLocation = new ArrayList<>();
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(response.getBody().getEmail(), expected.getEmail());
-        assertEquals(response.getBody().getPassword(), expected.getPassword());
+//        assertEquals(response.getBody().getPassword(), expected.getPassword());
+        assertEquals(response.getBody().getListOfLocation(), listOfLocation);
     }
 
     /*
