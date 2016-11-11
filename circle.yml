@@ -4,10 +4,13 @@ machine:
   services:
     - postgresql
 
+## Customize checkout
 checkout:
-  pre:
-    - git submodule update --init
-    - git submodule foreach --recursive git checkout master
+  post:
+    #- git submodule sync
+    #- git submodule update --init # use submodules
+    - git submodule init
+    - git submodule update
 
 database:
   override:
