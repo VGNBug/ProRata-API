@@ -46,6 +46,7 @@
             name="Employment with The Firm" />
     <employment_session
             employment_session_id="1"
+            prorata_user_id="1"
             start_time="2013-11-11 13:00:00"
             end_time="2013-11-11 19:00:00"
             employment_id="1"

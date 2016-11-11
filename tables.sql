@@ -105,7 +105,8 @@ CREATE TABLE employment_session (
     start_time timestamp with time zone,
     end_time timestamp with time zone,
     employment_id integer NOT NULL,
-    location_id integer NOT NULL
+    location_id integer NOT NULL,
+    prorata_user_id integer NOT NULL
 );
 
 CREATE SEQUENCE employment_session_employment_session_id_pk_seq
@@ -348,6 +349,9 @@ ALTER TABLE ONLY employment_session
 
 ALTER TABLE ONLY employment_session
     ADD CONSTRAINT fk_employment_session_location FOREIGN KEY (location_id) REFERENCES location(location_id);
+
+ALTER TABLE ONLY employment_session
+    ADD CONSTRAINT fk_employment_session_prorata_user FOREIGN KEY (prorata_user_id) REFERENCES prorata_user(prorata_user_id);
 
 ALTER TABLE ONLY location
     ADD CONSTRAINT fk_location_prorata_user FOREIGN KEY (prorata_user_id) REFERENCES prorata_user(prorata_user_id);

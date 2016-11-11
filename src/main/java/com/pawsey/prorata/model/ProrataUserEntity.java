@@ -190,6 +190,7 @@ public class ProrataUserEntity implements Serializable {
     public void setListOfEmployment( List<EmploymentEntity> listOfEmployment ) {
         this.listOfEmployment = listOfEmployment;
     }
+
     public List<EmploymentEntity> getListOfEmployment() {
         return this.listOfEmployment;
     }
@@ -197,6 +198,7 @@ public class ProrataUserEntity implements Serializable {
     public void setListOfAccount( List<AccountEntity> listOfAccount ) {
         this.listOfAccount = listOfAccount;
     }
+
     public List<AccountEntity> getListOfAccount() {
         return this.listOfAccount;
     }
@@ -204,6 +206,7 @@ public class ProrataUserEntity implements Serializable {
     public void setListOfLocation( List<LocationEntity> listOfLocation ) {
         this.listOfLocation = listOfLocation;
     }
+
     public List<LocationEntity> getListOfLocation() {
         return this.listOfLocation;
     }

@@ -128,8 +128,8 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(response.getBody().getEmail(), expected.getEmail());
-//        assertEquals(response.getBody().getPassword(), expected.getPassword());
-        assertEquals(response.getBody().getListOfLocation(), listOfLocation);
+        assertEquals(response.getBody().getPassword(), expected.getPassword());
+//        assertEquals(response.getBody().getListOfLocation(), listOfLocation);
     }
 
     /*
