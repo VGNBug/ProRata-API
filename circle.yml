@@ -32,9 +32,4 @@ deployment:
     branch: staging
     heroku:
       appname: prorata-api-staging
-
-checkout:
-  post:
-    - git submodule sync
-    - git submodule update --init
-    - git submodule foreach --recursive git checkout master
+      
