@@ -9,6 +9,7 @@ checkout:
   post:
     - git submodule sync
     - git submodule update --init --recursive
+    - git submodule foreach --recursive git checkout master
 
 database:
   override:
@@ -32,4 +33,3 @@ deployment:
     branch: staging
     heroku:
       appname: prorata-api-staging
-      
