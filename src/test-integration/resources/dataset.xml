@@ -25,4 +25,29 @@
         address="1b"
         postcode=", TE11ET"
         email="b@t.com" />
+    <location
+            location_id="1"
+            prorata_user_id="1"
+            x_coordinate="52.628391"
+            y_coordinate="1.294964" />
+    <employer
+            employer_id="1"
+            name="The Firm"
+            office_address="Firm House, 11 Firm Street, Firmham, Firmhamshire"
+            office_postcode="FI1 2RM" />
+    <employment
+            employment_id="1"
+            employer_id="1"
+            prorata_user_id="1"
+            hourly_rate="11.50"
+            start_date="2013-11-11"
+            end_date="2014-11-12"
+            hours_per_week="40"
+            name="Employment with The Firm" />
+    <employment_session
+            employment_session_id="1"
+            start_time="2013-11-11 13:00:00"
+            end_time="2013-11-11 19:00:00"
+            employment_id="1"
+            location_id="1" />
 </dataset>
