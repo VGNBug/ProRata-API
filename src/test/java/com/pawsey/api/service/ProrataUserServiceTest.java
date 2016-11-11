@@ -1,5 +1,6 @@
 package com.pawsey.api.service;
 
+import com.pawsey.prorata.api.component.EmploymentComponent;
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.repository.*;
@@ -31,6 +32,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     private final String BAD_EMAIL = "bad-email@test.com";
     private final String BAD_PASSWORD = "badPassword";
 
+    private EmploymentComponent employmentComponent = Mockito.mock(EmploymentComponent.class);
     private SubscriptionTypeRepository subscriptionTypeRepository = Mockito.mock(SubscriptionTypeRepository.class);
     private SubscriptionRepository subscriptionRepository = Mockito.mock(SubscriptionRepository.class);
     private AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
@@ -309,6 +311,8 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         when(employmentEntity.getHoursPerWeek()).thenReturn(new BigDecimal(40));
         when(employmentEntity.getName()).thenReturn("Test employment");
         when(employmentEntity.getHourlyRate()).thenReturn(new BigDecimal(10));
+        when(employmentEntity.getEmployer()).thenReturn(employerEntity);
+        when(employmentEntity.getProrataUser()).thenReturn(entity);
 
         when(userContactEntity.getProrataUser()).thenReturn(entity);
         when(userContactEntity.getContactType()).thenReturn("Mobile");
@@ -361,6 +365,11 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     }
 
     @Override
+    protected void setComponents() {
+        when(employmentComponent.nameEmploymentEntity(any(EmploymentEntity.class))).thenReturn(employmentEntity);
+    }
+
+    @Override
     protected void setService() {
         service = new ProrataUserServiceImpl();
         ReflectionTestUtils.setField(service, "repository", repository);
@@ -372,6 +381,8 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         ReflectionTestUtils.setField(service, "employerRepository", employerRepository);
         ReflectionTestUtils.setField(service, "employmentRepository", employmentRepository);
         ReflectionTestUtils.setField(service, "userContactRepository", userContactRepository);
+
+        ReflectionTestUtils.setField(service, "employmentComponent", employmentComponent);
     }
 
     private void checkEntityAssertions(ProrataUserEntity prorataUserEntity) {

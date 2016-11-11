@@ -1,6 +1,7 @@
 package com.pawsey.prorata.api.service.impl;
 
 import com.pawsey.api.service.impl.BaseServiceImpl;
+import com.pawsey.prorata.api.component.EmploymentComponent;
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.repository.*;
@@ -40,6 +41,8 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
 
     @Autowired
     private BankRepository bankRepository;
+
+    private EmploymentComponent employmentComponent = new EmploymentComponent();
 
     @Override
     @Transactional
@@ -206,6 +209,8 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
                         employerRepository.save(employer);
                         LOGGER.info("Created employer for employent " + employment.toString());
                     }
+
+                    employment = employmentComponent.nameEmploymentEntity(employment);
 
                     employment.setProrataUser(persistedUser);
                     employmentRepository.save(employment);

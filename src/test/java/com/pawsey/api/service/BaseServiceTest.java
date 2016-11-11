@@ -81,6 +81,8 @@ public abstract class BaseServiceTest<T, TService extends BaseService, TReposito
 
     protected abstract void setRepositories();
 
+    protected abstract void setComponents();
+
     protected abstract void setService();
 
     public abstract void testCreate() throws Exception;
