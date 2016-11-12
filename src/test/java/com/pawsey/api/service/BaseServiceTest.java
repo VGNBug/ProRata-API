@@ -1,6 +1,8 @@
 package com.pawsey.api.service;
 
 import com.pawsey.api.repository.BaseRepository;
+import com.pawsey.prorata.api.exception.IncorrectPasswordException;
+import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.mockito.Mock;
@@ -75,11 +77,13 @@ public abstract class BaseServiceTest<T, TService extends BaseService, TReposito
         return response;
     }
 
-    public abstract void setupRepositorySaveMock();
+    public abstract void setupRepositorySaveMock() throws IncorrectPasswordException, ProrataUserNotFoundException;
 
     protected abstract void setEntities();
 
     protected abstract void setRepositories();
+
+    protected abstract void setComponents() throws ProrataUserNotFoundException, IncorrectPasswordException;
 
     protected abstract void setService();
 
