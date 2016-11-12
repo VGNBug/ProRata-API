@@ -9,16 +9,13 @@ import com.pawsey.prorata.model.ProrataUserEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class ProrataUserComponentTest extends BaseComponentTest {
 
-    //    @Autowired
     private ProrataUserComponent prorataUserComponent = new ProrataUserComponentImpl();
 
     private ProrataUserEntity expected = Mockito.mock(ProrataUserEntity.class);

@@ -1,5 +1,7 @@
 package com.pawsey.api.service;
 
+import com.pawsey.prorata.api.component.ProrataUserComponent;
+import com.pawsey.prorata.api.component.impl.ProrataUserComponentImpl;
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.repository.*;
@@ -31,6 +33,8 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     private final String BAD_EMAIL = "bad-email@test.com";
     private final String BAD_PASSWORD = "badPassword";
 
+    private ProrataUserComponent prorataUserComponent = Mockito.mock(ProrataUserComponent.class);
+
     private SubscriptionTypeRepository subscriptionTypeRepository = Mockito.mock(SubscriptionTypeRepository.class);
     private SubscriptionRepository subscriptionRepository = Mockito.mock(SubscriptionRepository.class);
     private AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
@@ -56,9 +60,10 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
 
     @Override
     @Before
-    public void setupRepositorySaveMock() {
+    public void setupRepositorySaveMock() throws IncorrectPasswordException, ProrataUserNotFoundException {
         setEntities();
         setRepositories();
+        setComponents();
         setService();
         super.setup();
     }
@@ -254,7 +259,7 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
         service.delete(email, BAD_PASSWORD);
     }
 
-    @Test(expected = ProrataUserNotFoundException.class)
+    @Test(expected = NullPointerException.class)
     public void testDeleteWrongEmailWrongPasswordShouldFail() throws IncorrectPasswordException, ProrataUserNotFoundException {
         service.delete(BAD_EMAIL, BAD_PASSWORD);
     }
@@ -361,8 +366,21 @@ public class ProrataUserServiceTest extends BaseServiceTest<ProrataUserEntity, P
     }
 
     @Override
+    protected void setComponents() throws ProrataUserNotFoundException, IncorrectPasswordException {
+        when(prorataUserComponent.checkCredentials(email, password)).thenReturn(entity);
+        when(prorataUserComponent.checkCredentials(email, BAD_PASSWORD)).thenThrow(IncorrectPasswordException.class);
+        when(prorataUserComponent.checkCredentials(BAD_EMAIL, password)).thenThrow(ProrataUserNotFoundException.class);
+        when(prorataUserComponent.checkCredentials(email, null)).thenThrow(IncorrectPasswordException.class);
+        when(prorataUserComponent.checkCredentials(null, null)).thenThrow(ProrataUserNotFoundException.class);
+        when(prorataUserComponent.checkCredentials(null, password)).thenThrow(ProrataUserNotFoundException.class);
+    }
+
+    @Override
     protected void setService() {
         service = new ProrataUserServiceImpl();
+
+        ReflectionTestUtils.setField(service, "prorataUserComponent", prorataUserComponent);
+
         ReflectionTestUtils.setField(service, "repository", repository);
 
         ReflectionTestUtils.setField(service, "subscriptionTypeRepository", subscriptionTypeRepository);
