@@ -118,7 +118,6 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
 
         LocationEntity location = new LocationEntity();
         location.setLocationId(1);
-        location.setProrataUser(expected);
         location.setXCoordinate(new BigDecimal(52.628391));
         location.setYCoordinate(new BigDecimal(1.294964));
         location.setListOfEmploymentSession(employmentSessions);

@@ -74,6 +74,10 @@ public class EmploymentEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
+    /**
+     * Please note that employment session is included here and within locations. This is not accidental data
+     * redundancy; it is to take into account users who may not wish to use the location feature.
+     */
     @JsonManagedReference("EmploymentEntity_EmploymentSessionEntity")
     @OneToMany(mappedBy="employment", targetEntity=EmploymentSessionEntity.class)
     protected List<EmploymentSessionEntity> listOfEmploymentSession;
@@ -90,6 +94,10 @@ public class EmploymentEntity implements Serializable {
     @JsonManagedReference("EmploymentEntity_PaymentEntity")
     @OneToMany(mappedBy="employment", targetEntity=PaymentEntity.class)
     protected List<PaymentEntity> listOfPayment;
+
+    @JsonManagedReference("EmploymentEntity_LocationEntity")
+    @OneToMany(mappedBy="employment", targetEntity=LocationEntity.class)
+    protected List<LocationEntity> listOfLocation;
 
     @JsonBackReference("EmployerEntity_EmploymentEntity")
     @ManyToOne
@@ -187,6 +195,13 @@ public class EmploymentEntity implements Serializable {
     }
     public List<PaymentEntity> getListOfPayment() {
         return this.listOfPayment;
+    }
+
+    public void setListOfLocation( List<LocationEntity> listOfLocation ) {
+        this.listOfLocation = listOfLocation;
+    }
+    public List<LocationEntity> getListOfLocation() {
+        return this.listOfLocation;
     }
 
     public void setEmployer( EmployerEntity employer ) {
