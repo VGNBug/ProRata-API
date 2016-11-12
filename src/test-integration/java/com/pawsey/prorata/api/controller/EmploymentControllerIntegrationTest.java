@@ -25,9 +25,9 @@ import static org.junit.Assert.assertTrue;
 @SpringApplicationConfiguration(classes = ProRataApiApplication.class)
 @WebAppConfiguration
 @IntegrationTest("${local.server.port}")
-public class EmploymentSessionControllerIntegrationTest extends BaseControllerIntegrationTest {
+public class EmploymentControllerIntegrationTest extends BaseControllerIntegrationTest {
 
-    private final String CONTROLLER_PATH = "/employmentSession";
+    private final String CONTROLLER_PATH = "/employment";
     private final String HAPPY_PATH_EMAIL = "bob@test.com";
     private final String HAPPY_PATH_PASSWORD = "password";
     private final String SAD_PATH_EMAIL = "sadPathEmail@test.com";
