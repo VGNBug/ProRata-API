@@ -87,11 +87,6 @@ public class ProrataUserEntity implements Serializable {
     @OneToMany(mappedBy="prorataUser", targetEntity=AccountEntity.class)
     protected List<AccountEntity> listOfAccount;
 
-
-    @JsonManagedReference("ProrataUserEntity_LocationEntity")
-    @OneToMany(mappedBy="prorataUser", targetEntity=LocationEntity.class)
-    protected List<LocationEntity> listOfLocation;
-
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
@@ -203,14 +198,6 @@ public class ProrataUserEntity implements Serializable {
         return this.listOfAccount;
     }
 
-    public void setListOfLocation( List<LocationEntity> listOfLocation ) {
-        this.listOfLocation = listOfLocation;
-    }
-
-    public List<LocationEntity> getListOfLocation() {
-        return this.listOfLocation;
-    }
-
     //----------------------------------------------------------------------
     // toString METHOD
     //----------------------------------------------------------------------
@@ -221,6 +208,7 @@ public class ProrataUserEntity implements Serializable {
         sb.append("]:"); 
         sb.append(firstName);
         sb.append("|");
+
         sb.append(lastName);
         sb.append("|");
         sb.append(email);

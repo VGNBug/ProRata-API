@@ -64,11 +64,6 @@ public class LocationEntity implements Serializable {
     @OneToMany(mappedBy="location", targetEntity=EmploymentSessionEntity.class)
     protected List<EmploymentSessionEntity> listOfEmploymentSession;
 
-    @JsonBackReference("ProrataUserEntity_LocationEntity")
-    @ManyToOne
-    @JoinColumn(name="prorata_user_id", referencedColumnName="prorata_user_id")
-    protected ProrataUserEntity prorataUser ;
-
     @JsonBackReference("EmploymentEntity_LocationEntity")
     @ManyToOne
     @JoinColumn(name="employment_id", referencedColumnName="employment_id")
@@ -121,9 +116,6 @@ public class LocationEntity implements Serializable {
     public List<EmploymentSessionEntity> getListOfEmploymentSession() {
         return this.listOfEmploymentSession;
     }
-
-    public ProrataUserEntity getProrataUser() { return this.prorataUser; }
-    public void setProrataUser(ProrataUserEntity prorataUser) { this.prorataUser = prorataUser; }
 
     public EmploymentEntity getEmployment() { return this.employment; }
     public void setEmployment(EmploymentEntity employment) { this.employment = employment; }

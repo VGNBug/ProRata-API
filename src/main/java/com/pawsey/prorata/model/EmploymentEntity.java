@@ -74,6 +74,10 @@ public class EmploymentEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
+    /**
+     * Please note that employment session is included here and within locations. This is not accidental data
+     * redundancy; it is to take into account users who may not wish to use the location feature.
+     */
     @JsonManagedReference("EmploymentEntity_EmploymentSessionEntity")
     @OneToMany(mappedBy="employment", targetEntity=EmploymentSessionEntity.class)
     protected List<EmploymentSessionEntity> listOfEmploymentSession;
