@@ -91,6 +91,10 @@ public class EmploymentEntity implements Serializable {
     @OneToMany(mappedBy="employment", targetEntity=PaymentEntity.class)
     protected List<PaymentEntity> listOfPayment;
 
+    @JsonManagedReference("EmploymentEntity_LocationEntity")
+    @OneToMany(mappedBy="employment", targetEntity=LocationEntity.class)
+    protected List<LocationEntity> listOfLocation;
+
     @JsonBackReference("EmployerEntity_EmploymentEntity")
     @ManyToOne
     @JoinColumn(name="employer_id", referencedColumnName="employer_id")
@@ -187,6 +191,13 @@ public class EmploymentEntity implements Serializable {
     }
     public List<PaymentEntity> getListOfPayment() {
         return this.listOfPayment;
+    }
+
+    public void setListOfLocation( List<LocationEntity> listOfLocation ) {
+        this.listOfLocation = listOfLocation;
+    }
+    public List<LocationEntity> getListOfLocation() {
+        return this.listOfLocation;
     }
 
     public void setEmployer( EmployerEntity employer ) {

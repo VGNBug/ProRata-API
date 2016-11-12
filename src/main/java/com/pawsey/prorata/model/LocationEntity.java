@@ -69,6 +69,11 @@ public class LocationEntity implements Serializable {
     @JoinColumn(name="prorata_user_id", referencedColumnName="prorata_user_id")
     protected ProrataUserEntity prorataUser ;
 
+    @JsonBackReference("EmploymentEntity_LocationEntity")
+    @ManyToOne
+    @JoinColumn(name="employment_id", referencedColumnName="employment_id")
+    protected EmploymentEntity employment ;
+
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
@@ -119,6 +124,9 @@ public class LocationEntity implements Serializable {
 
     public ProrataUserEntity getProrataUser() { return this.prorataUser; }
     public void setProrataUser(ProrataUserEntity prorataUser) { this.prorataUser = prorataUser; }
+
+    public EmploymentEntity getEmployment() { return this.employment; }
+    public void setEmployment(EmploymentEntity employment) { this.employment = employment; }
 
     //----------------------------------------------------------------------
     // toString METHOD

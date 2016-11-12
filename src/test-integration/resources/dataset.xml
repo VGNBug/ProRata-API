@@ -25,11 +25,6 @@
         address="1b"
         postcode=", TE11ET"
         email="b@t.com" />
-    <location
-            location_id="1"
-            prorata_user_id="1"
-            x_coordinate="52.628391"
-            y_coordinate="1.294964" />
     <employer
             employer_id="1"
             name="The Firm"
@@ -44,6 +39,12 @@
             end_date="2014-11-12"
             hours_per_week="40"
             name="Employment with The Firm" />
+    <location
+            location_id="1"
+            prorata_user_id="1"
+            employment_id="1"
+            x_coordinate="52.628391"
+            y_coordinate="1.294964" />
     <employment_session
             employment_session_id="1"
             prorata_user_id="1"
