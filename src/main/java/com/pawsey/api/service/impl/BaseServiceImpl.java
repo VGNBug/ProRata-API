@@ -1,5 +1,6 @@
 package com.pawsey.api.service.impl;
 
+import com.pawsey.BaseClass;
 import com.pawsey.api.repository.BaseRepository;
 import com.pawsey.api.service.BaseService;
 import org.apache.commons.logging.Log;
@@ -18,8 +19,7 @@ import java.util.List;
  * Implementation of {@link com.pawsey.api.service.BaseService}
  */
 @Service
-public abstract class BaseServiceImpl<T, TRepository extends BaseRepository> implements BaseService<T> {
-    protected static final Log LOGGER = LogFactory.getLog(BaseServiceImpl.class);
+public abstract class BaseServiceImpl<T, TRepository extends BaseRepository> extends BaseClass implements BaseService<T> {
 
     @Autowired
     protected

@@ -1,6 +1,7 @@
 package com.pawsey.prorata.api.service.impl;
 
 import com.pawsey.api.service.impl.BaseServiceImpl;
+import com.pawsey.prorata.api.component.ProrataUserComponent;
 import com.pawsey.prorata.api.exception.IncorrectPasswordException;
 import com.pawsey.prorata.api.exception.ProrataUserNotFoundException;
 import com.pawsey.prorata.api.repository.*;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +41,9 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     @Autowired
     private BankRepository bankRepository;
 
+    @Autowired
+    private ProrataUserComponent prorataUserComponent;
+
     @Override
     @Transactional
     public ProrataUserEntity create(ProrataUserEntity user) throws Exception {
@@ -59,7 +62,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
         }
 
         try {
-            return checkCredentials(persistedUser.getEmail(), persistedUser.getPassword());
+            return prorataUserComponent.checkCredentials(persistedUser.getEmail(), persistedUser.getPassword());
         } catch (ProrataUserNotFoundException | IncorrectPasswordException e) {
             throw new ProrataUserNotFoundException("User creation failed.");
         }
@@ -132,7 +135,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     public ProrataUserEntity signIn(String email, String password) throws
             ProrataUserNotFoundException, IncorrectPasswordException {
         LOGGER.info("Making request for ProrataUserEntity with email \"" + email + "\" and password \"" + password + "\"");
-        return checkCredentials(email, password);
+        return prorataUserComponent.checkCredentials(email, password);
     }
 
     @Override
@@ -140,42 +143,7 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
     public void delete(String email, String password) throws
             ProrataUserNotFoundException, IncorrectPasswordException {
         LOGGER.info("Attempting to delete ProrataUserEntity with email \"" + email + "\" and password \"" + password + "\"");
-        super.delete(checkCredentials(email, password));
-    }
-
-    @Transactional
-    private ProrataUserEntity checkCredentials(String email, String password) throws
-            ProrataUserNotFoundException, IncorrectPasswordException {
-
-        if (email == null || "".equals(email)) {
-            LOGGER.error("Unable to find a ProrataUserEntity with email \"" + email + "\"");
-            throw new ProrataUserNotFoundException("Incorrect email address");
-        }
-        if (password == null || "".equals(password)) {
-            LOGGER.error("Password provided was null.");
-            throw new IncorrectPasswordException("You must provide a password.");
-        }
-
-        ProrataUserEntity matchByEmail = null;
-
-        try {
-            matchByEmail = repository.findByEmail(email);
-        } catch (Exception e) {
-            LOGGER.error("Unable to find user by email due to an unknown error.");
-            throw new ProrataUserNotFoundException("We're sorry, there was an error. If the error persists, please let us know.");
-        }
-        if (matchByEmail != null) {
-            if (password.equals(matchByEmail.getPassword())) {
-                return matchByEmail;
-            } else {
-                String errorMessage = "Incorrect password.";
-                LOGGER.error("User provided an " + errorMessage);
-                throw new IncorrectPasswordException(errorMessage);
-            }
-        } else {
-            LOGGER.error("Unable to find a ProrataUserEntity with email \"" + email + "\"");
-            throw new ProrataUserNotFoundException("Incorrect email address");
-        }
+        super.delete(prorataUserComponent.checkCredentials(email, password));
     }
 
     @Transactional
