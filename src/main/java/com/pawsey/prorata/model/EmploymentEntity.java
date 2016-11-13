@@ -74,14 +74,6 @@ public class EmploymentEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    /**
-     * Please note that employment session is included here and within locations. This is not accidental data
-     * redundancy; it is to take into account users who may not wish to use the location feature.
-     */
-    @JsonManagedReference("EmploymentEntity_EmploymentSessionEntity")
-    @OneToMany(mappedBy="employment", targetEntity=EmploymentSessionEntity.class)
-    protected List<EmploymentSessionEntity> listOfEmploymentSession;
-
     @JsonBackReference("ProrataUserEntity_EmploymentEntity")
     @ManyToOne
     @JoinColumn(name="prorata_user_id", referencedColumnName="prorata_user_id")
@@ -169,12 +161,6 @@ public class EmploymentEntity implements Serializable {
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR LINKS
     //----------------------------------------------------------------------
-    public void setListOfEmploymentSession( List<EmploymentSessionEntity> listOfEmploymentSession ) {
-        this.listOfEmploymentSession = listOfEmploymentSession;
-    }
-    public List<EmploymentSessionEntity> getListOfEmploymentSession() {
-        return this.listOfEmploymentSession;
-    }
 
     public void setProrataUser( ProrataUserEntity prorataUser ) {
         this.prorataUser = prorataUser;

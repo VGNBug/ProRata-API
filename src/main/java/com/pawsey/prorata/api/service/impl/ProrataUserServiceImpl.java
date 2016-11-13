@@ -244,8 +244,8 @@ public class ProrataUserServiceImpl extends BaseServiceImpl<ProrataUserEntity, P
 
         if (user.getListOfEmployment() != null) {
             for (EmploymentEntity employment : user.getListOfEmployment()) {
-                Hibernate.initialize(employment.getListOfEmploymentSession());
                 Hibernate.initialize(employment.getListOfContract());
+                Hibernate.initialize(employment.getListOfLocation());
                 Hibernate.initialize(employment.getListOfPayment());
                 Hibernate.initialize(employment.getEmployer());
             }

@@ -63,10 +63,6 @@ public class EmploymentSessionEntity implements Serializable {
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
-    @JsonBackReference("EmploymentEntity_EmploymentSessionEntity")
-    @ManyToOne
-    @JoinColumn(name="employment_id", referencedColumnName="employment_id")
-    protected EmploymentEntity employment  ;
 
     @JsonBackReference("LocationEntity_EmploymentSessionEntity")
     @ManyToOne
@@ -114,13 +110,6 @@ public class EmploymentSessionEntity implements Serializable {
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR LINKS
     //----------------------------------------------------------------------
-    public void setEmployment( EmploymentEntity employment ) {
-        this.employment = employment;
-    }
-    public EmploymentEntity getEmployment() {
-        return this.employment;
-    }
-
     public void setLocation( LocationEntity location ) {
         this.location = location;
     }

@@ -104,7 +104,6 @@ CREATE TABLE employment_session (
     employment_session_id integer NOT NULL,
     start_time timestamp with time zone,
     end_time timestamp with time zone,
-    employment_id integer NOT NULL,
     location_id integer NOT NULL,
     prorata_user_id integer NOT NULL
 );
@@ -344,9 +343,6 @@ ALTER TABLE ONLY employment
 
 ALTER TABLE ONLY employment
     ADD CONSTRAINT fk_employment_1 FOREIGN KEY (prorata_user_id) REFERENCES prorata_user(prorata_user_id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY employment_session
-    ADD CONSTRAINT fk_employment_session_0 FOREIGN KEY (employment_id) REFERENCES employment(employment_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY location
     ADD CONSTRAINT fk_location_employment FOREIGN KEY (employment_id) REFERENCES employment(employment_id);

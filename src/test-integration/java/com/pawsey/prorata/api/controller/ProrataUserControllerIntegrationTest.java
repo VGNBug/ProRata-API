@@ -111,7 +111,6 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
 
         EmploymentSessionEntity employmentSession = new EmploymentSessionEntity();
         employmentSession.setStartTime(now);
-        employmentSession.setEmployment(employment);
 
         List<EmploymentSessionEntity> employmentSessions = new ArrayList<>();
         employmentSessions.add(employmentSession);
