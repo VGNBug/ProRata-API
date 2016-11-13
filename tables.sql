@@ -104,7 +104,8 @@ CREATE TABLE employment_session (
     employment_session_id integer NOT NULL,
     start_time timestamp with time zone,
     end_time timestamp with time zone,
-    location_id integer NOT NULL,
+    location_id integer,
+    manual_session_id INTEGER,
     prorata_user_id integer NOT NULL
 );
 
@@ -116,6 +117,23 @@ CREATE SEQUENCE employment_session_employment_session_id_pk_seq
     CACHE 1;
 
 ALTER SEQUENCE employment_session_employment_session_id_pk_seq OWNED BY employment_session.employment_session_id;
+
+CREATE TABLE manual_session (
+    manual_session_id integer NOT NULL,
+    employment_id integer NOT NULL,
+    employment_session_id integer NOT NULL
+);
+
+CREATE SEQUENCE manual_session_manual_session_id_pk_seq
+START WITH 1
+INCREMENT BY 1
+NO MINVALUE
+NO MAXVALUE
+CACHE 1;
+
+ALTER SEQUENCE manual_session_manual_session_id_pk_seq OWNED BY manual_session.manual_session_id;
+
+--
 
 CREATE TABLE location (
     location_id integer NOT NULL,
@@ -293,6 +311,9 @@ ALTER TABLE ONLY employer_contact
 ALTER TABLE ONLY employment
     ADD CONSTRAINT pk_employment PRIMARY KEY (employment_id);
 
+ALTER TABLE ONLY manual_session
+    ADD CONSTRAINT pk_manual_session PRIMARY KEY (manual_session_id);
+
 ALTER TABLE ONLY employment_session
     ADD CONSTRAINT pk_employment_session PRIMARY KEY (employment_session_id);
 
@@ -343,6 +364,12 @@ ALTER TABLE ONLY employment
 
 ALTER TABLE ONLY employment
     ADD CONSTRAINT fk_employment_1 FOREIGN KEY (prorata_user_id) REFERENCES prorata_user(prorata_user_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY manual_session
+    ADD CONSTRAINT fk_manual_session_employment FOREIGN KEY (employment_id) REFERENCES employment(employment_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY manual_session
+    ADD CONSTRAINT fk_manual_session_employment_session FOREIGN KEY (employment_session_id) REFERENCES employment_session(employment_session_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY location
     ADD CONSTRAINT fk_location_employment FOREIGN KEY (employment_id) REFERENCES employment(employment_id);

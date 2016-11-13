@@ -91,6 +91,10 @@ public class EmploymentEntity implements Serializable {
     @OneToMany(mappedBy="employment", targetEntity=LocationEntity.class)
     protected List<LocationEntity> listOfLocation;
 
+    @JsonManagedReference("EmploymentEntity_ManualSessionEntity")
+    @OneToMany(mappedBy="manual_session", targetEntity=ManualSessionEntity.class)
+    protected List<ManualSessionEntity> listOfManualSession;
+
     @JsonBackReference("EmployerEntity_EmploymentEntity")
     @ManyToOne
     @JoinColumn(name="employer_id", referencedColumnName="employer_id")

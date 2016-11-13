@@ -69,6 +69,10 @@ public class EmploymentSessionEntity implements Serializable {
     @JoinColumn(name="location_id", referencedColumnName="location_id")
     protected LocationEntity location    ;
 
+    @JsonBackReference("ManualInputEntity_EmploymentSessionEntity")
+    @OneToOne
+    @JoinColumn(name="manual_session_id", referencedColumnName="manual_session_id")
+    protected ManualSessionEntity manualSession;
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
@@ -116,6 +120,9 @@ public class EmploymentSessionEntity implements Serializable {
     public LocationEntity getLocation() {
         return this.location;
     }
+
+    public void setManualSession( ManualSessionEntity manualSession ) { this.manualSession = manualSession; }
+    public ManualSessionEntity getManualSession() { return this.manualSession; }
 
 
     //----------------------------------------------------------------------
