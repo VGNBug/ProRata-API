@@ -119,6 +119,7 @@ public class ProrataUserControllerIntegrationTest extends BaseControllerIntegrat
         location.setLocationId(1);
         location.setXCoordinate(new BigDecimal(52.628391));
         location.setYCoordinate(new BigDecimal(1.294964));
+        location.setRadius(new BigDecimal(1000));
         location.setListOfEmploymentSession(employmentSessions);
 
         List<LocationEntity> listOfLocation = new ArrayList<>();

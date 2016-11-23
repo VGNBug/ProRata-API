@@ -22,16 +22,15 @@ import com.fasterxml.jackson.annotation.*;
  * Persistent class for entity stored in table "location"
  *
  * @author Telosys Tools Generator
- *
  */
 
 @Entity
-@Table(name="location", schema="public" )
+@Table(name = "location", schema = "public")
 // Define named queries here
-@NamedQueries ( {
-  @NamedQuery ( name="LocationEntity.countAll", query="SELECT COUNT(x) FROM LocationEntity x" )
-} )
-@JsonIgnoreProperties(ignoreUnknown = true) 
+@NamedQueries({
+        @NamedQuery(name = "LocationEntity.countAll", query = "SELECT COUNT(x) FROM LocationEntity x")
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationEntity implements Serializable {
 
     protected static final long serialVersionUID = 1L;
@@ -40,49 +39,51 @@ public class LocationEntity implements Serializable {
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
     @Id
-    @Column(name="location_id", nullable=false)
+    @Column(name = "location_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_location_id_pk_seq")
     @SequenceGenerator(name = "location_location_id_pk_seq", sequenceName = "location_location_id_pk_seq")
-    protected Integer    locationId   ;
+    protected Integer locationId;
 
 
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name="x_coordinate", nullable=false)
-    protected BigDecimal xCoordinate  ;
+    @Column(name = "x_coordinate", nullable = false)
+    protected BigDecimal xCoordinate;
 
-    @Column(name="y_coordinate", nullable=false)
-    protected BigDecimal yCoordinate  ;
+    @Column(name = "y_coordinate", nullable = false)
+    protected BigDecimal yCoordinate;
 
-
+    @Column(name = "radius")
+    protected BigDecimal radius;
 
     //----------------------------------------------------------------------
     // ENTITY LINKS ( RELATIONSHIP )
     //----------------------------------------------------------------------
     @JsonManagedReference("LocationEntity_EmploymentSessionEntity")
-    @OneToMany(mappedBy="location", targetEntity=EmploymentSessionEntity.class)
+    @OneToMany(mappedBy = "location", targetEntity = EmploymentSessionEntity.class)
     protected List<EmploymentSessionEntity> listOfEmploymentSession;
 
     @JsonBackReference("EmploymentEntity_LocationEntity")
     @ManyToOne
-    @JoinColumn(name="employment_id", referencedColumnName="employment_id")
-    protected EmploymentEntity employment ;
+    @JoinColumn(name = "employment_id", referencedColumnName = "employment_id")
+    protected EmploymentEntity employment;
 
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
     public LocationEntity() {
-		super();
+        super();
     }
-    
+
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
-    public void setLocationId( Integer locationId ) {
-        this.locationId = locationId ;
+    public void setLocationId(Integer locationId) {
+        this.locationId = locationId;
     }
+
     public Integer getLocationId() {
         return this.locationId;
     }
@@ -91,47 +92,64 @@ public class LocationEntity implements Serializable {
     // GETTERS & SETTERS FOR FIELDS
     //----------------------------------------------------------------------
     //--- DATABASE MAPPING : x_coordinate ( numeric ) 
-    public void setXCoordinate( BigDecimal xCoordinate ) {
+    public void setXCoordinate(BigDecimal xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
+
     public BigDecimal getXCoordinate() {
         return this.xCoordinate;
     }
 
     //--- DATABASE MAPPING : y_coordinate ( numeric ) 
-    public void setYCoordinate( BigDecimal yCoordinate ) {
+    public void setYCoordinate(BigDecimal yCoordinate) {
         this.yCoordinate = yCoordinate;
     }
+
     public BigDecimal getYCoordinate() {
         return this.yCoordinate;
+    }
+
+    //--- DATABASE MAPPING : radius ( numeric )
+    public void setRadius(BigDecimal radius) {
+        this.radius = radius;
+    }
+
+    public BigDecimal getRadius() {
+        return radius;
     }
 
 
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR LINKS
     //----------------------------------------------------------------------
-    public void setListOfEmploymentSession( List<EmploymentSessionEntity> listOfEmploymentSession ) {
+    public void setListOfEmploymentSession(List<EmploymentSessionEntity> listOfEmploymentSession) {
         this.listOfEmploymentSession = listOfEmploymentSession;
     }
+
     public List<EmploymentSessionEntity> getListOfEmploymentSession() {
         return this.listOfEmploymentSession;
     }
 
-    public EmploymentEntity getEmployment() { return this.employment; }
-    public void setEmployment(EmploymentEntity employment) { this.employment = employment; }
+    public EmploymentEntity getEmployment() {
+        return this.employment;
+    }
+
+    public void setEmployment(EmploymentEntity employment) {
+        this.employment = employment;
+    }
 
     //----------------------------------------------------------------------
     // toString METHOD
     //----------------------------------------------------------------------
-    public String toString() { 
-        StringBuffer sb = new StringBuffer(); 
-        sb.append("["); 
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("[");
         sb.append(locationId);
-        sb.append("]:"); 
+        sb.append("]:");
         sb.append(xCoordinate);
         sb.append("|");
         sb.append(yCoordinate);
-        return sb.toString(); 
-    } 
+        return sb.toString();
+    }
 
 }

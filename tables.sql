@@ -122,7 +122,8 @@ CREATE TABLE location (
     employment_id integer NOT NULL,
     employment_session_id integer NOT NULL,
     x_coordinate numeric NOT NULL,
-    y_coordinate numeric NOT NULL
+    y_coordinate numeric NOT NULL,
+    radius numeric
 );
 
 CREATE SEQUENCE location_location_id_pk_seq
