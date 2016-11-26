@@ -120,7 +120,6 @@ ALTER SEQUENCE employment_session_employment_session_id_pk_seq OWNED BY employme
 CREATE TABLE location (
     location_id integer NOT NULL,
     employment_id integer NOT NULL,
-    employment_session_id integer NOT NULL,
     x_coordinate numeric NOT NULL,
     y_coordinate numeric NOT NULL,
     radius numeric
@@ -347,9 +346,6 @@ ALTER TABLE ONLY employment
 
 ALTER TABLE ONLY location
     ADD CONSTRAINT fk_location_employment FOREIGN KEY (employment_id) REFERENCES employment(employment_id);
-
-ALTER TABLE ONLY location
-    ADD CONSTRAINT fk_location_employment_session FOREIGN KEY (employment_session_id) REFERENCES employment_session(employment_session_id);
 
 ALTER TABLE ONLY user_contact
     ADD CONSTRAINT fk_h6syfj9fse40b9ii02tcxj3ya FOREIGN KEY (user_contact_id) REFERENCES prorata_user(prorata_user_id);

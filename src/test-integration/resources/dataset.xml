@@ -47,8 +47,13 @@
     <location
             location_id="1"
             employment_id="1"
-            employment_session_id="1"
             x_coordinate="52.628391"
             y_coordinate="1.294964"
-            radius="1000" />
+            radius="100" />
+    <location
+            location_id="2"
+            employment_id="1"
+            x_coordinate="52.628391"
+            y_coordinate="1.294964"
+            radius="100" />
 </dataset>
