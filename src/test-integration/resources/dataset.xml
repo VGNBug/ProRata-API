@@ -56,4 +56,10 @@
             x_coordinate="52.628391"
             y_coordinate="1.294964"
             radius="100" />
+    <location
+            location_id="2"
+            employment_id="1"
+            x_coordinate="52.608355"
+            y_coordinate="1.287420"
+            radius="50" />
 </dataset>

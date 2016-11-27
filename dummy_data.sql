@@ -33,3 +33,7 @@ INSERT INTO location
 INSERT INTO location
     (location_id, employment_id, x_coordinate, y_coordinate, radius)
     VALUES(2, 1, 51.628391, 1.294964, 100);
+
+INSERT INTO location
+    (location_id, employment_id, x_coordinate, y_coordinate, radius)
+    VALUES (3, 1, 52.608355, 1.287420, 50);
