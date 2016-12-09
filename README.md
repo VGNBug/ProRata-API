@@ -1,6 +1,6 @@
-# ProRata-API #
+# ProRata Server app #
 
-This project currently serves as a template spring API, build with gradle, with the following properties:
+This project currently serves as a template spring server app, build with gradle, with the following properties:
 
 - Building with Circle CI (see circle.yml).
 - Deployment with Heroku (see Procfile).
@@ -8,7 +8,7 @@ This project currently serves as a template spring API, build with gradle, with 
 It can be forked and refactored for use as the basis of other projects.
 
 ## Developer Setup ##
-This is a quickstart guide to help you get up and running with development of the ProRata-API.
+This is a quickstart guide to help you get up and running with development of ProRata-Server.
 
 ### Prerequisites ###
 You will need to have set up the ProRata-Database, which currently uses PostgreSQL 9.4.
