@@ -48,6 +48,9 @@ configurations {
 dependencies {
 
     // Local
+    testCompile project(path: ':Generic-SpringBoot-Server-App', configuration: 'testOutput')
+    integrationTestCompile project(path: ':Generic-SpringBoot-Server-App', configuration: 'integrationTestOutput')
+    compile project(':Generic-SpringBoot-Server-App')
     compile project(':ProRata-Model')
 
     // Remote

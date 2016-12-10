@@ -1,2 +1,3 @@
 include 'ProRata-Model'
+include 'Generic-SpringBoot-Server-App'
 
