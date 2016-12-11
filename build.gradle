@@ -52,7 +52,6 @@ dependencies {
     integrationTestCompile project(path: ':Generic-SpringBoot-Server-App', configuration: 'integrationTestOutput')
     compile project(':Generic-SpringBoot-Server-App')
     compile project(':ProRata-Model')
-    compile project(':ProrataUser-Service')
 
     // Remote
     compile('org.springframework.boot:spring-boot-starter')
