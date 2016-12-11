@@ -4,3 +4,6 @@
 [submodule "Generic-SpringBoot-Server-App"]
 	path = Generic-SpringBoot-Server-App
 	url = https://github.com/VGNBug/Generic-SpringBoot-Server-App.git
+[submodule "Tax-Calculator"]
+	path = Tax-Calculator
+	url = https://github.com/VGNBug/Tax-Calculator.git

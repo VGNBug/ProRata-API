@@ -1,6 +1,6 @@
-package com.pawsey.prorata.api;
+package com.pawsey.prorata;
 
-import com.pawsey.prorata.api.ProRataApiApplication;
+import com.pawsey.prorata.ProRataApiApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.web.WebAppConfiguration;
