@@ -10,3 +10,6 @@
 [submodule "Budget-Calculator"]
 	path = Budget-Calculator
 	url = https://github.com/VGNbug/Budget-Calculator.git
+[submodule "EmploymentSession-Pay-Calculator"]
+	path = EmploymentSession-Pay-Calculator
+	url = https://github.com/VGNbug/EmploymentSession-Pay-Calculator.git
