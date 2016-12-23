@@ -7,9 +7,9 @@
 [submodule "Tax-Calculator"]
 	path = Tax-Calculator
 	url = https://github.com/VGNBug/Tax-Calculator.git
-[submodule "EmploymentSession-Length-Calculator"]
-	path = EmploymentSession-Length-Calculator
-	url = https://github.com/VGNbug/EmploymentSession-Length-Calculator.git
+[submodule "EmploymentSession-Pay-Calculator"]
+	path = EmploymentSession-Pay-Calculator
+	url = https://github.com/VGNbug/EmploymentSession-Pay-Calculator.git
 [submodule "Budget-Calculator"]
 	path = Budget-Calculator
 	url = https://github.com/VGNbug/Budget-Calculator.git
