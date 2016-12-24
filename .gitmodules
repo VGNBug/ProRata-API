@@ -13,3 +13,6 @@
 [submodule "EmploymentSession-Pay-Calculator"]
 	path = EmploymentSession-Pay-Calculator
 	url = https://github.com/VGNbug/EmploymentSession-Pay-Calculator.git
+[submodule "TimeUtils"]
+	path = TimeUtils
+	url = https://github.com/VGNbug/TimeUtils.git
