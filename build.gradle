@@ -52,7 +52,7 @@ dependencies {
     integrationTestCompile project(path: ':Generic-SpringBoot-Server-App', configuration: 'integrationTestOutput')
     compile project(':Generic-SpringBoot-Server-App')
     compile project(':ProRata-Model')
-	compile project(':EmploymentSession-Length-Calculator')
+	compile project(':EmploymentSession-Pay-Calculator')
 	compile project(':Tax-Calculator')
 	compile project(':Budget-Calculator')
 
